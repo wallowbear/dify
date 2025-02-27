@@ -69,8 +69,6 @@ const AppPublisher = ({
   const appMode = (appDetail?.mode !== 'completion' && appDetail?.mode !== 'workflow') ? 'chat' : appDetail.mode
   const appURL = `${appBaseURL}/${appMode}/${accessToken}`
 
-  debugger
-
   const language = useGetLanguage()
   const formatTimeFromNow = useCallback((time: number) => {
     return dayjs(time).locale(language === 'zh_Hans' ? 'zh-cn' : language.replace('_', '-')).fromNow()

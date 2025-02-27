@@ -1,5 +1,5 @@
 # base image
-FROM node:20-alpine AS base
+FROM node:20-alpine3.20 AS base
 LABEL maintainer="takatost@gmail.com"
 
 # if you located in China, you can use aliyun mirror to speed up
@@ -40,10 +40,10 @@ FROM base AS production
 ENV NODE_ENV=production
 ENV EDITION=SELF_HOSTED
 ENV DEPLOY_ENV=PRODUCTION
-ENV CONSOLE_API_URL=http://localhost/console/api
-ENV APP_API_URL=http://localhost/api
-ENV MARKETPLACE_API_URL=https://marketplace.dify.ai/api/v1
-ENV MARKETPLACE_URL=https://marketplace.dify.ai
+ENV CONSOLE_API_URL=http://127.0.0.1:5001
+ENV APP_API_URL=http://127.0.0.1:5001
+ENV MARKETPLACE_API_URL=http://127.0.0.1:5001
+ENV MARKETPLACE_URL=http://127.0.0.1:5001
 ENV PORT=3000
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PM2_INSTANCES=2

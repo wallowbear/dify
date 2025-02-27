@@ -35,14 +35,6 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: true,
-  async rewrites() {
-    return [
-      {
-        source: '/console/api/:path*',
-        destination: 'http://localhost/console/api/:path*', // 匹配 Docker 的路径
-      },
-    ]
-  },
   async redirects() {
     return [
       {
