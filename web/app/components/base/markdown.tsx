@@ -207,14 +207,9 @@ ScriptBlock.displayName = 'ScriptBlock'
 const Paragraph = (paragraph: any) => {
   const { node }: any = paragraph
   const children_node = node.children
-  if (children_node && children_node[0] && 'tagName' in children_node[0] && children_node[0].tagName === 'img') {
-    return (
-      <>
-        <ImageGallery srcs={[children_node[0].properties.src]} />
-        <p>{paragraph.children.slice(1)}</p>
-      </>
-    )
-  }
+  if (children_node && children_node[0] && 'tagName' in children_node[0] && children_node[0].tagName === 'img')
+    return <ImageGallery srcs={[children_node[0].properties.src]} />
+
   return <p>{paragraph.children}</p>
 }
 
