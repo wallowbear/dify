@@ -336,12 +336,13 @@ export const ssePost = (
   const abortController = new AbortController()
 
   const token = localStorage.getItem('console_token')
-
+  const bwhrToken = localStorage.getItem('bwhr_token')
   const options = Object.assign({}, baseOptions, {
     method: 'POST',
     signal: abortController.signal,
     headers: new Headers({
       Authorization: `Bearer ${token}`,
+      BwhrToken: bwhrToken || '',
     }),
   } as RequestInit, fetchOptions)
 
@@ -412,7 +413,19 @@ export const ssePost = (
 export const request = async<T>(url: string, options = {}, otherOptions?: IOtherOptions) => {
   try {
     const otherOptionsForBaseFetch = otherOptions || {}
-    const [err, resp] = await asyncRunSafe<T>(baseFetch(url, options, otherOptionsForBaseFetch))
+
+    // 添加自定义 token 到 headers
+    const customHeaders = (options as any).headers || {}
+    const token = localStorage.getItem('bwhr_token') // 替换为您实际的 token key
+    if (token)
+      customHeaders.BwhrToken = token // 替换为您需要的 header 名称
+
+    const optionsWithToken = {
+      ...options,
+      headers: customHeaders,
+    }
+
+    const [err, resp] = await asyncRunSafe<T>(baseFetch(url, optionsWithToken, otherOptionsForBaseFetch))
     if (err === null)
       return resp
     const errResp: Response = err as any
