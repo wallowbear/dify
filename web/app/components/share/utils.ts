@@ -4,6 +4,12 @@ import { fetchAccessToken } from '@/service/share'
 export const checkOrSetAccessToken = async () => {
   const sharedToken = globalThis.location.pathname.split('/').slice(-1)[0]
   const accessToken = localStorage.getItem('token') || JSON.stringify({ [sharedToken]: '' })
+
+  // 获取地址栏名为key的参数
+  const key = globalThis.location.search.split('key=')[1]
+  if (key)
+    localStorage.setItem('sys_token', key)
+
   let accessTokenJson = { [sharedToken]: '' }
   try {
     accessTokenJson = JSON.parse(accessToken)
