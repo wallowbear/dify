@@ -366,7 +366,7 @@ export const ssePost = (
     signal: abortController.signal,
     headers: new Headers({
       Authorization: `Bearer ${token}`,
-      SysToken: sysToken || '',
+      Token: sysToken || '',
     }),
   } as RequestInit, fetchOptions)
 
@@ -466,7 +466,7 @@ export const request = async<T>(url: string, options = {}, otherOptions?: IOther
     const customHeaders = (options as any).headers || {}
     const token = localStorage.getItem('sys_token') // 替换为您实际的 token key
     if (token)
-      customHeaders.SysToken = token // 替换为您需要的 header 名称
+      customHeaders.Token = token // 替换为您需要的 header 名称
 
     const optionsWithToken = {
       ...options,
