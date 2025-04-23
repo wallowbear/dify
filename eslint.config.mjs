@@ -27,5 +27,10 @@ export default [
 			...reactHooks.configs.recommended.rules,
 		},
 	},
+	{
+		rules: {
+			'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+		},
+	},
 	{ ignores: ['dist/'] },
 ]

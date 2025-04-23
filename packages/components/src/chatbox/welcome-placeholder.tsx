@@ -12,10 +12,11 @@ import { Prompts, Welcome } from '@ant-design/x'
 import { IGetAppParametersResponse } from '@dify-chat/api'
 import { IDifyAppItem } from '@dify-chat/core'
 import { useIsMobile } from '@dify-chat/helpers'
-import { Button, FormInstance, GetProp, Space } from 'antd'
+import { Button, FormInstance, GetProp, message, Space } from 'antd'
 import classNames from 'classnames'
 import { useMemo } from 'react'
 
+import { validateAndGenErrMsgs } from '../utils'
 import AppInputWrapper from './app-input-wrapper'
 
 const renderTitle = (icon: React.ReactElement, title: string) => (
@@ -115,7 +116,7 @@ export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
 				],
 			},
 		]
-		if (appParameters?.suggested_questions) {
+		if (appParameters?.suggested_questions?.length) {
 			return [
 				{
 					key: 'remote',
@@ -193,7 +194,15 @@ export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
 										flex: 1,
 									},
 						}}
-						onItemClick={onPromptItemClick}
+						onItemClick={async (...params) => {
+							validateAndGenErrMsgs(props.entryForm).then(res => {
+								if (res.isSuccess) {
+									onPromptItemClick(...params)
+								} else {
+									message.error(res.errMsgs)
+								}
+							})
+						}}
 					/>
 				) : null}
 			</Space>

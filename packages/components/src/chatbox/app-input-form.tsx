@@ -188,7 +188,16 @@ export default function AppInputForm(props: IAppInputFormProps) {
 										name={item.name}
 										label={item.label}
 										required={item.required}
-										rules={item.rules}
+										rules={
+											item.required
+												? [
+														{
+															required: true,
+															message: `${item.label}不能为空`,
+														},
+													]
+												: []
+										}
 									>
 										{item.type === 'text-input' ? (
 											<Input

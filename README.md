@@ -12,9 +12,13 @@
 
 ## 🥇 Golden Sponsors
 
+> 注：每日手动更新
+
 - [forgoodthing](https://github.com/forgoodthing)
 - [Unmurphy](https://github.com/unmurphy)
 - [打豆豆](https://github.com/wallowbear)
+- [TZP](https://github.com/tangzp)
+- 匿名慈善家
 
 ## Repobeats
 
@@ -313,9 +317,9 @@ Dify 支持通过 `jinja2` 来配置回复表单供用户填写，本项目也�
 
 ```json
 {
-	"username": "cellerchan",
-	"phone": "13012345678",
-	"content": "我要举报你",
+	"username": "lexmin",
+	"phone": "13123456789",
+	"content": "快递太慢啦，我要举报",
 	"isFormSubmit": true
 }
 ```
@@ -323,6 +327,8 @@ Dify 支持通过 `jinja2` 来配置回复表单供用户填写，本项目也�
 其中，`isFormSubmit` 字段用于标识这是一个表单提交的消息, 你可以在 Chatflow 编排的条件分支中使用它来进行判断。
 
 ![回复表单](./docs/guide__sample_form_answer.png)
+
+#### 4.1 自定义提交消息文本
 
 如果你不想展示具体的表单值对象，而是需要自定义发送的消息文本，可以按照下面的指引，在应用配置中进行配置（此配置只影响界面展示，实际提交到 Dify Chatflow 开始节点的仍然是用户填写的表单值 json 字符串）。
 

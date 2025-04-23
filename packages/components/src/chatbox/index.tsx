@@ -9,10 +9,11 @@ import {
 } from '@dify-chat/api'
 import { IDifyAppItem } from '@dify-chat/core'
 import { isTempId, useIsMobile } from '@dify-chat/helpers'
-import { FormInstance, GetProp } from 'antd'
+import { FormInstance, GetProp, message } from 'antd'
 import { useDeferredValue, useEffect, useMemo, useRef } from 'react'
 
 import { MessageSender } from '../message-sender'
+import { validateAndGenErrMsgs } from '../utils'
 import MessageContent from './message/content'
 import MessageFooter from './message/footer'
 import { WelcomePlaceholder } from './welcome-placeholder'
@@ -273,8 +274,14 @@ export const Chatbox = (props: ChatboxProps) => {
 						<MessageSender
 							appParameters={appParameters}
 							onSubmit={async (...params) => {
-								await entryForm.validateFields()
-								return onSubmit(...params)
+								return validateAndGenErrMsgs(entryForm).then(res => {
+									if (res.isSuccess) {
+										return onSubmit(...params)
+									} else {
+										message.error(res.errMsgs)
+										return Promise.reject(`表单校验失败: ${res.errMsgs}`)
+									}
+								})
 							}}
 							isRequesting={isRequesting}
 							className="w-full"

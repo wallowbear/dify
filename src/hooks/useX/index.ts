@@ -104,14 +104,16 @@ export const useX = (options: {
 			while (reader) {
 				const { value: chunk, done } = await reader.read()
 				if (done) {
-					// 缓存工作流数据
-					workflowDataStorage.set({
-						appId: latestProps.current.appId || '',
-						conversationId,
-						messageId,
-						key: 'workflows',
-						value: workflows,
-					})
+					// 如果有工作流数据，则缓存
+					if (workflows.nodes?.length) {
+						workflowDataStorage.set({
+							appId: latestProps.current.appId || '',
+							conversationId,
+							messageId,
+							key: 'workflows',
+							value: workflows,
+						})
+					}
 					onSuccess({
 						content: result,
 						files,
@@ -160,25 +162,21 @@ export const useX = (options: {
 					} catch (error) {
 						console.error('解析 JSON 失败', error)
 					}
+
+					// 用于回调的 ID 更新 start
+					if (parsedData.conversation_id && parsedData.conversation_id !== conversationId) {
+						conversationId = parsedData.conversation_id
+					}
+					if (parsedData.message_id && parsedData.message_id !== messageId) {
+						messageId = parsedData.message_id
+					}
+					// 用于回调的 ID 更新 end
+
 					if (parsedData.task_id && parsedData.task_id !== currentTaskId) {
 						setCurrentTaskId(parsedData.task_id)
 					}
+
 					if (parsedData.event === EventEnum.MESSAGE_END) {
-						// onSuccess({
-						// 	content: result,
-						// 	files,
-						// 	workflows,
-						// 	agentThoughts,
-						// })
-						// 刷新消息列表
-						// getConversationMessages(parsedData.conversation_id)
-						// onConversationIdChange(parsedData.conversation_id)
-						// const conversation_id = parsedData.conversation_id;
-						// 如果有对话 ID，跟当前的对比一下
-						// if (conversation_id && isTempId(conversationId)) {
-						//   // 通知外部组件，对话 ID 变更，外部组件需要更新对话列表
-						//   onConversationIdChange(conversation_id);
-						// }
 						// 如果开启了建议问题，获取下一轮问题建议
 						if (appParameters?.suggested_questions_after_answer.enabled) {
 							getNextSuggestions(parsedData.message_id)
@@ -186,9 +184,6 @@ export const useX = (options: {
 					}
 					const innerData = parsedData.data
 					if (parsedData.event === EventEnum.WORKFLOW_STARTED) {
-						// 在这里才赋值 conversationId 和 messageId，因为其他事件中可能没有这些字段
-						conversationId = parsedData.conversation_id
-						messageId = parsedData.message_id
 						workflows.status = 'running'
 						workflows.nodes = []
 						onUpdate({
