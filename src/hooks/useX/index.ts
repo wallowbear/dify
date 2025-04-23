@@ -101,6 +101,17 @@ export const useX = (options: {
 			// 记录对话和消息 ID
 			let conversationId = latestProps.current.conversationId || ''
 			let messageId = ''
+			
+			// 更新对话ID的回调，优化为无感更新
+			const maybeUpdateConversationId = (newId: string) => {
+				// 只有当当前是临时ID且不同于新ID时，才更新ID
+				if (isTempId(conversationId) && newId !== conversationId) {
+					console.log('无感更新对话ID: 从', conversationId, '到', newId);
+					conversationId = newId
+					if (onConversationIdChange) onConversationIdChange(newId)
+				}
+			}
+
 			while (reader) {
 				const { value: chunk, done } = await reader.read()
 				if (done) {
@@ -121,7 +132,6 @@ export const useX = (options: {
 						agentThoughts,
 					})
 					getConversationMessages(conversationId)
-					onConversationIdChange(conversationId)
 					break
 				}
 				if (!chunk) continue
@@ -165,7 +175,7 @@ export const useX = (options: {
 
 					// 用于回调的 ID 更新 start
 					if (parsedData.conversation_id && parsedData.conversation_id !== conversationId) {
-						conversationId = parsedData.conversation_id
+						maybeUpdateConversationId(parsedData.conversation_id)
 					}
 					if (parsedData.message_id && parsedData.message_id !== messageId) {
 						messageId = parsedData.message_id
@@ -264,6 +274,7 @@ export const useX = (options: {
 							name: `${(parsedData as unknown as IErrorEvent).status}: ${(parsedData as unknown as IErrorEvent).code}`,
 							message: (parsedData as unknown as IErrorEvent).message,
 						})
+						maybeUpdateConversationId(parsedData.conversation_id)
 						getConversationMessages(parsedData.conversation_id)
 					}
 					if (parsedData.event === EventEnum.AGENT_MESSAGE) {

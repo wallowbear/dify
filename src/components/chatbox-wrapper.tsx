@@ -230,12 +230,24 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
 	}
 
 	useEffect(() => {
-		setInitLoading(true)
-		setMessages([])
-		setNextSuggestions([])
-		setHistoryMessages([])
-		initConversationInfo()
-	}, [currentConversationId])
+		// 检查是否是从临时ID转换到真实ID的情况
+		const isConvertingFromTemp = 
+			currentConversationId && 
+			!isTempId(currentConversationId) && 
+			messages.length > 0;
+		
+		// 只有在不是从临时ID转换的情况下才重置UI
+		if (!isConvertingFromTemp) {
+			setInitLoading(true);
+			setMessages([]);
+			setNextSuggestions([]);
+			setHistoryMessages([]);
+			initConversationInfo();
+		} else {
+			// 仅更新对话ID，不清空现有消息和状态
+			initConversationInfo();
+		}
+	}, [currentConversationId]);
 
 	const onPromptsItemClick: GetProp<typeof Prompts, 'onItemClick'> = info => {
 		onRequest({
