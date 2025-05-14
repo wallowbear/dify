@@ -202,7 +202,7 @@ ScriptBlock.displayName = 'ScriptBlock'
 const Paragraph = (paragraph: any) => {
   const { node }: any = paragraph
   const children_node = node.children
-  if (children_node && children_node[0] && 'tagName' in children_node[0] && children_node[0].tagName === 'img') {
+  if (children_node && children_node[0] && 'tagName' in children_node[0] ) {
     return (
       <>
         {/* <ImageGallery srcs={[children_node[0].properties.src]} /> */}
@@ -216,7 +216,7 @@ const Paragraph = (paragraph: any) => {
 }
 
 const Img = ({ src }: any) => {
-  return (<img src={src} />)
+  return (<img src={src} style={{ width: '70%' }} />)
 }
 
 const Link = ({ node, ...props }: any) => {
