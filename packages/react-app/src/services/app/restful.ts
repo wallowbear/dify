@@ -4,7 +4,13 @@ import { BaseRequest } from '@/services/base-request'
 
 const API_BASE_URL = 'https://bwhrdemo.baowugroup.cn/special/ai/console/api'
 
-const request = new BaseRequest({ baseURL: API_BASE_URL })
+const request = new BaseRequest({
+	baseURL: API_BASE_URL,
+	headers: {
+		'authorization':`Bearer ${localStorage.getItem('console_token')}`,
+		'Bwhr-Token': `${localStorage.getItem('sys_token')}`,
+	},
+})
 
 /**
  * 应用列表 CRUD 的 RESTful 实现

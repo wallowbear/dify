@@ -94,6 +94,8 @@ const MultiAppLayout: React.FC = () => {
 		difyApi.updateOptions({
 			user,
 			...appItem.requestConfig,
+			apiBase: 'https://bwhrdemo.baowugroup.cn/special/ai/v1',
+			apiKey: 'app-BkFKoValB0qF1Z5ElqHMdMqu',
 		})
 		setInitLoading(true)
 		// 获取应用参数

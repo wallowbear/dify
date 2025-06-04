@@ -1,10 +1,11 @@
 export class BaseRequest {
-	constructor(options: { baseURL: string }) {
+	constructor(options: { baseURL: string, headers: Record<string, string>|undefined }) {
 		this.options = options
 	}
 
 	options: {
 		baseURL: string
+		headers: Record<string, string>|undefined
 	}
 
 	async baseRequest(url: string, options: RequestInit) {
@@ -19,9 +20,10 @@ export class BaseRequest {
 			...options,
 			headers: {
 				...options.headers,
+				...this.options?.headers,
 				'Content-Type': 'application/json',
-				'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZDFmN2IxMmQtYTdhZi00NjM4LWE2NDMtYzAyNzVhZTVmYjAwIiwiZXhwIjoxNzQ5MDA1ODE4LCJpc3MiOiJTRUxGX0hPU1RFRCIsInN1YiI6IkNvbnNvbGUgQVBJIFBhc3Nwb3J0In0.sPmfGy2tNPxvoVnZdAySzJVxOL6kkmlt1WRiI3aYzo8',
-				'Bwhr-Token': 'eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiI5NDkyZDk2NC1hNzQ4LTRhOTctODU5Mi1iNzAyNzQ1ODNiNmUiLCJzdWIiOiIyMVdYMTEyIiwidXNlcklwIjoiMTAuMjUuMjI3LjE0OCIsInVzZXJOYW1lIjoi56qm5Lqa546yKOi_kOe7tOi0puWPtykiLCJocmFyZWFDb2RlIjoiMTAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiaHJhcmVhTmFtZSI6IuS4reWbveWuneatpumSoumTgembhuWbouaciemZkOWFrOWPuCIsImN1cnJlbnRPcmdDb2RlIjoiQlNUQSIsImN1cnJlbnRPcmdOYW1lIjoi5Lit5Zu95a6d5q2m6ZKi6ZOB6ZuG5Zui5pyJ6ZmQ5YWs5Y-4IiwiYXBwQ29kZSI6IkJXSFIiLCJ0ZW5hbnRDb2RlIjoiQlNUQSIsInJvb3RPcmdDb2RlIjoiQlNUQSIsInRva2VuQ3JlYXRlVGltZSI6MTc0OTAwMjIwNzI4Nn0.HXly1Bot1uj2qUHfCPRqnLATp7g6VPVKGrIQyGxDesueWypT5M-IYl_6Zxq18nkZ1uIs5BumAhfZLHSqcNI_pQ',
+				//'authorization':`Bearer ${localStorage.getItem('console_token')}`, // 这个是console_token是登录过管理端才会有，要手动设置在缓存才能生效
+				//'Bwhr-Token': `${localStorage.getItem('sys_token')}`,
 			},
 		})
 		return result.json()
