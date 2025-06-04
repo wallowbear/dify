@@ -11,7 +11,7 @@ import './App.css'
 import LayoutIndex from './layout'
 import AppListPage from './pages/app-list'
 import ChatPage from './pages/chat'
-import DifyAppService from './services/app/localstorage'
+import DifyAppService from './services/app/restful'
 
 // 初始化响应式配置
 initResponsiveConfig()

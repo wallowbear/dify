@@ -249,8 +249,7 @@ const Paragraph = (paragraph: IParagraphProps) => {
 	return <p>{paragraph.children}</p>
 }
 
-const Img = ({ src }: any) => {
-  return (<img src={src} style={{ width: '70%' }} />)
+
 interface ILinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
 	node: HTMLAnchorElement
 	href?: string

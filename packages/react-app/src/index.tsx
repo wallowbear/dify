@@ -6,10 +6,10 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 
 // 初始化 rybbit SDK
-rybbit.init({
-	analyticsHost: 'https://app.rybbit.io/api',
-	siteId: '296',
-})
+// rybbit.init({
+// 	analyticsHost: 'https://app.rybbit.io/api',
+// 	siteId: '296',
+// })
 
 const rootEl = document.getElementById('root')
 if (rootEl) {

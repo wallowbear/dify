@@ -176,7 +176,7 @@ const MultiAppLayout: React.FC = () => {
 														key: item.id,
 														label: (
 															<div className={isSelected ? 'text-primary' : 'text-theme-text'}>
-																{item.info.name}
+																{item.name}
 															</div>
 														),
 														onClick: () => {

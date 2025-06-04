@@ -2,7 +2,7 @@ import { DifyAppStore, type IDifyAppItem } from '@dify-chat/core'
 
 import { BaseRequest } from '@/services/base-request'
 
-const API_BASE_URL = 'http://localhost:3000'
+const API_BASE_URL = 'https://bwhrdemo.baowugroup.cn/special/ai/console/api'
 
 const request = new BaseRequest({ baseURL: API_BASE_URL })
 
@@ -14,7 +14,7 @@ class DifyAppService extends DifyAppStore {
 
 	async getApps(): Promise<IDifyAppItem[]> {
 		const response = await request.get(`/apps`)
-		return response
+		return response.data
 	}
 
 	async getApp(id: string): Promise<IDifyAppItem | undefined> {
