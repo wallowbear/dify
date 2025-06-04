@@ -34,13 +34,8 @@ interface IConversationListProps {
  * 会话列表
  */
 export const ConversationList = (props: IConversationListProps) => {
-	const {
-		deleteConversationPromise,
-		renameConversationPromise,
-		items,
-		activeKey,
-		onActiveChange,
-	} = props
+	const { deleteConversationPromise, renameConversationPromise, items, activeKey, onActiveChange } =
+		props
 
 	const [renameForm] = Form.useForm()
 
@@ -63,7 +58,7 @@ export const ConversationList = (props: IConversationListProps) => {
 		})
 		Modal.confirm({
 			destroyOnClose: true,
-			title: '会话重命名',
+			title: '编辑对话名称',
 			content: (
 				<Form
 					form={renameForm}
@@ -78,14 +73,14 @@ export const ConversationList = (props: IConversationListProps) => {
 				await renameForm.validateFields()
 				const values = await renameForm.validateFields()
 				await renameConversationPromise(conversation.key, values.name)
-				message.success('会话重命名成功')
+				message.success('对话重命名成功')
 			},
 		})
 	}
 
 	return (
 		<Conversations
-			className="p-0"
+			className="!p-0"
 			items={items}
 			activeKey={activeKey}
 			onActiveChange={onActiveChange}

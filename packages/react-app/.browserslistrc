@@ -1,0 +1,5 @@
+>= 0.1%
+chrome >= 48
+edge >= 92
+safari >= 13.1
+firefox >= 52

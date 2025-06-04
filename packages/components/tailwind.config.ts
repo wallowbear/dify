@@ -1,3 +1,3 @@
-import rootTailwindConfig from '../../tailwind.config'
+import rootTailwindConfig from "../react-app/tailwind.config";
 
-export default rootTailwindConfig
+export default rootTailwindConfig;

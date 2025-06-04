@@ -12,7 +12,7 @@ const minWidth = {
 const content = ['./src/**/*.{html,js,ts,jsx,tsx}']
 
 // 则添加 packages/components 目录
-content.push('./packages/components/src/**/*.{html,js,ts,jsx,tsx}')
+content.push('../components/src/**/*.{html,js,ts,jsx,tsx}')
 
 const config: Config = {
 	content,
@@ -22,6 +22,7 @@ const config: Config = {
 			minWidth,
 		},
 	},
+	darkMode: 'selector',
 	plugins: [],
 }
 

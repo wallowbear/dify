@@ -3,113 +3,165 @@ import {
 	CloseCircleOutlined,
 	InfoOutlined,
 	LoadingOutlined,
-} from '@ant-design/icons'
-import { IAgentMessage, IWorkflowNode } from '@dify-chat/api'
-import { Collapse } from 'antd'
+} from "@ant-design/icons";
+import { IAgentMessage, IWorkflowNode } from "@dify-chat/api";
+import { useAppContext } from "@dify-chat/core";
+import { Collapse, CollapseProps, GetProp } from "antd";
+import { useMemo } from "react";
 
-import WorkflowNodeDetail from './workflow-node-detail'
-import WorkflowNodeIcon from './workflow-node-icon'
+import LucideIcon from "../../lucide-icon";
+import WorkflowNodeDetail from "./workflow-node-detail";
+import WorkflowNodeIcon from "./workflow-node-icon";
 
 interface IWorkflowLogsProps {
-	status: NonNullable<IAgentMessage['workflows']>['status']
-	items: IWorkflowNode[]
+	className?: string;
+	status: NonNullable<IAgentMessage["workflows"]>["status"];
+	items: IWorkflowNode[];
 }
 
 export default function WorkflowLogs(props: IWorkflowLogsProps) {
-	const { items, status } = props
+	const { items, status, className } = props;
+	const { currentApp } = useAppContext();
+
+	// Collapse 组件的通用 props
+	const collapseCommonProps: Pick<CollapseProps, "expandIconPosition"> =
+		useMemo(() => {
+			if (currentApp?.site?.show_workflow_steps) {
+				return {
+					expandIconPosition: "end",
+				};
+			}
+			return {
+				expandIconPosition: "end",
+			};
+		}, [currentApp?.site?.show_workflow_steps]);
+
+	// Collapse 组件的 item 通用 props
+	const collapseItemVisibleProps: Pick<
+		GetProp<CollapseProps, "items">[0],
+		"showArrow" | "collapsible"
+	> = useMemo(() => {
+		if (currentApp?.site?.show_workflow_steps) {
+			return {
+				showArrow: true,
+			};
+		}
+		return {
+			showArrow: false,
+			collapsible: "icon",
+		};
+	}, [currentApp?.site?.show_workflow_steps]);
 
 	if (!items?.length) {
-		return null
+		return null;
 	}
 
-	const collapseItems = [
+	const collapseItems: CollapseProps["items"] = [
 		{
-			key: 'workflow',
+			key: "workflow",
 			label: (
-				<div className="flex items-center justify-between">
-					<div>工作流</div>
-					{status === 'running' ? (
+				<div className="flex items-center">
+					{status === "running" ? (
 						<LoadingOutlined />
-					) : status === 'finished' ? (
-						<div className="text-green-700 flex items-center">
-							<span className="mr-2">成功</span>
-							<CheckCircleOutlined className="text-green-700" />
+					) : status === "finished" ? (
+						<div className="text-theme-success flex items-center">
+							<LucideIcon name="circle-check" />
 						</div>
 					) : null}
+					<div className="text-theme-text ml-2">工作流</div>
 				</div>
 			),
+			...collapseItemVisibleProps,
 			children: (
 				<Collapse
 					size="small"
-					items={items.map(item => {
-						const totalTokens = item.execution_metadata?.total_tokens
+					expandIconPosition={collapseCommonProps.expandIconPosition}
+					items={items.map((item) => {
+						const totalTokens = item.execution_metadata?.total_tokens;
 						return {
 							key: item.id,
+							...collapseItemVisibleProps,
 							label: (
 								<div className="flex items-center justify-between w-full">
 									<div className="flex items-center">
-										<div className="mr-2">
-											<WorkflowNodeIcon type={item.type} />
-										</div>
-										<div>{item.title}</div>
-									</div>
-									<div className="flex items-center">
-										{item.status === 'success' ? (
-											<>
-												<div className="mr-3">{item.elapsed_time?.toFixed(3)} 秒</div>
-												<div className="mr-3">{totalTokens ? `${totalTokens} tokens` : ''}</div>
-											</>
-										) : null}
-										{item.status === 'success' ? (
-											<CheckCircleOutlined className="text-green-700" />
-										) : item.status === 'error' ? (
-											<CloseCircleOutlined className="text-red-700" />
-										) : item.status === 'running' ? (
+										{item.status === "success" ? (
+											<CheckCircleOutlined className="text-theme-success" />
+										) : item.status === "error" ? (
+											<CloseCircleOutlined className="text-theme-danger" />
+										) : item.status === "running" ? (
 											<LoadingOutlined />
 										) : (
 											<InfoOutlined />
 										)}
+										<div className="mx-2 flex items-center">
+											<WorkflowNodeIcon type={item.type} />
+										</div>
+										<div className="text-theme-text">{item.title}</div>
+									</div>
+									<div className="flex items-center  text-theme-text">
+										{item.status === "success" ? (
+											<>
+												<div className="mr-3">
+													{item.elapsed_time?.toFixed(3)} 秒
+												</div>
+												<div className="mr-3">
+													{totalTokens ? `${totalTokens} tokens` : ""}
+												</div>
+											</>
+										) : null}
 									</div>
 								</div>
 							),
+							...collapseItemVisibleProps,
 							children: (
 								<Collapse
 									size="small"
 									items={[
 										{
 											key: `${item.id}-input`,
-											label: '输入',
-											children: <WorkflowNodeDetail originalContent={item.inputs} />,
+											label: "输入",
+											children: (
+												<WorkflowNodeDetail originalContent={item.inputs} />
+											),
 										},
 										{
 											key: `${item.id}-process`,
-											label: '处理过程',
-											children: <WorkflowNodeDetail originalContent={item.process_data} />,
+											label: "处理过程",
+											children: (
+												<WorkflowNodeDetail
+													originalContent={item.process_data}
+												/>
+											),
 										},
 										{
 											key: `${item.id}-output`,
-											label: '输出',
-											children: <WorkflowNodeDetail originalContent={item.outputs} />,
+											label: "输出",
+											children: (
+												<WorkflowNodeDetail
+													originalContent={item.outputs as string}
+												/>
+											),
 										},
 									]}
 								></Collapse>
 							),
-						}
+						};
 					})}
 				>
 					{}
 				</Collapse>
 			),
 		},
-	]
+	];
 
 	return (
-		<div className="md:min-w-chat-card my-3">
+		<div className={`md:min-w-chat-card mt-3 ${className || ""}`}>
 			<Collapse
 				items={collapseItems}
 				size="small"
-				className="bg-white"
+				className="!bg-theme-bg"
+				expandIconPosition={collapseCommonProps.expandIconPosition}
 			/>
 		</div>
-	)
+	);
 }

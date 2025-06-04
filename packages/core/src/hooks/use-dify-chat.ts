@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 
-import { DifyAppStore, IDifyAppItem } from '../repository'
+import { AppModeEnums } from '../constants'
+import { DifyAppStore, DifyAppStoreReadonly, IDifyAppItem } from '../repository'
 
 export type IDifyChatMode = 'singleApp' | 'multiApp'
 
@@ -22,7 +23,17 @@ export interface IDifyChatContextSingleApp extends IDifyChatContextBase {
 	/**
 	 * 当前应用配置
 	 */
-	appConfig: Omit<IDifyAppItem, 'id' | 'info'>
+	appConfig: Omit<IDifyAppItem, 'id' | 'info'> & {
+		/**
+		 * 应用信息 可选，主要是为了兼容旧版本 dify(<=1.3.1) 的 /info 接口没有返回 mode 的情况
+		 */
+		info?: {
+			/**
+			 * 应用类型
+			 */
+			mode?: AppModeEnums
+		}
+	}
 }
 
 /**
@@ -36,7 +47,7 @@ export interface IDifyChatContextMultiApp extends IDifyChatContextBase {
 	/**
 	 * 应用服务，用于实现应用列表的 CRUD 管理
 	 */
-	appService: DifyAppStore
+	appService: DifyAppStore | DifyAppStoreReadonly
 	/**
 	 * 是否允许用户配置, 启用后界面会展示设置按钮，点击可对应用进行增删改操作, 默认为 true
 	 */
@@ -87,27 +98,13 @@ export const DifyChatProvider = DifyChatContext.Provider
 /**
  * 使用 DifyChat 的 context 值
  */
-export const useDifyChat = (): IDifyChatContext & IGlobalStore => {
-	const [currentAppConfig, setCurrentAppConfig] = useState<IDifyAppItem>({} as IDifyAppItem)
+export const useDifyChat = (): IDifyChatContext => {
 	const difyChatContext = useContext(DifyChatContext)
 	const { mode } = difyChatContext
 	const defaultValue =
 		mode === 'multiApp' ? DEFAULT_CONTEXT_VALUE : DEFAULT_CONTEXT_VALUE_SINGLE_APP
 	return {
-		currentAppConfig,
-		setCurrentAppConfig,
 		...defaultValue,
 		...difyChatContext,
 	}
-}
-
-interface IGlobalStore {
-	/**
-	 * 当前的应用配置
-	 */
-	currentAppConfig: IDifyAppItem
-	/**
-	 * 更新当前的应用配置
-	 */
-	setCurrentAppConfig: (config: IDifyAppItem) => void
 }

@@ -1,17 +1,16 @@
 import { CloudUploadOutlined, LinkOutlined } from '@ant-design/icons'
 import { Attachments, AttachmentsProps, Sender } from '@ant-design/x'
-import { DifyApi, IFile, IGetAppParametersResponse, IUploadFileResponse } from '@dify-chat/api'
+import { DifyApi, IFile, IUploadFileResponse } from '@dify-chat/api'
+import { useAppContext } from '@dify-chat/core'
+import { useThemeContext } from '@dify-chat/theme'
 import { Badge, Button, GetProp, GetRef, message } from 'antd'
 import { RcFile } from 'antd/es/upload'
 import { useMemo, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 
-import { FileTypeMap, getFileExtByName, getFileTypeByName } from './utils'
+import { FileTypeMap, getDifyFileType, getFileExtByName } from './utils'
 
 interface IMessageSenderProps {
-	/**
-	 * Dify 应用参数
-	 */
-	appParameters?: IGetAppParametersResponse
 	/**
 	 * 类名
 	 */
@@ -50,38 +49,34 @@ interface IMessageSenderProps {
  * 用户消息发送区
  */
 export const MessageSender = (props: IMessageSenderProps) => {
-	const {
-		isRequesting,
-		onSubmit,
-		className,
-		onCancel,
-		uploadFileApi,
-		audio2TextApi,
-		appParameters,
-	} = props
+	const { isRequesting, onSubmit, className, onCancel, uploadFileApi, audio2TextApi } = props
+	const { currentApp } = useAppContext()
 	const [content, setContent] = useState('')
 	const [open, setOpen] = useState(false)
 	const [files, setFiles] = useState<GetProp<AttachmentsProps, 'items'>>([])
 	const [fileIdMap, setFileIdMap] = useState<Map<string, string>>(new Map())
 	const recordedChunks = useRef<Blob[]>([])
 	const [audio2TextLoading, setAudio2TextLoading] = useState(false)
+	const attachmentsRef = useRef<GetRef<typeof Attachments>>(null)
+	const senderRef = useRef<GetRef<typeof Sender>>(null)
+	const { isLight } = useThemeContext()
 
 	const onChange = (value: string) => {
 		setContent(value)
 	}
 
 	const allowedFileTypes = useMemo(() => {
-		if (!appParameters?.file_upload) {
+		if (!currentApp?.parameters?.file_upload) {
 			return []
 		}
 		const result: string[] = []
-		appParameters.file_upload.allowed_file_types.forEach(item => {
+		currentApp.parameters.file_upload.allowed_file_types?.forEach(item => {
 			if (FileTypeMap.get(item)) {
 				result.push(...((FileTypeMap.get(item) as string[]) || []))
 			}
 		})
 		return result
-	}, [appParameters?.file_upload])
+	}, [currentApp?.parameters?.file_upload])
 
 	const handleUpload = async (file: RcFile) => {
 		const prevFiles = [...files]
@@ -142,7 +137,6 @@ export const MessageSender = (props: IMessageSenderProps) => {
 		})
 	}
 
-	const senderRef = useRef<GetRef<typeof Sender>>(null)
 	const senderHeader = (
 		<Sender.Header
 			title="上传文件"
@@ -155,10 +149,10 @@ export const MessageSender = (props: IMessageSenderProps) => {
 			}}
 		>
 			<Attachments
+				ref={attachmentsRef}
 				beforeUpload={async file => {
 					// 校验文件类型
 					// 自定义上传
-
 					const ext = getFileExtByName(file.name)
 					// 校验文件类型
 					if (allowedFileTypes.length > 0 && !allowedFileTypes.includes(ext!)) {
@@ -201,74 +195,102 @@ export const MessageSender = (props: IMessageSenderProps) => {
 	const [recording, setRecording] = useState(false)
 	const mediaRecorder = useRef<MediaRecorder | null>(null)
 
+	/**
+	 * 语音转文本配置
+	 */
+	const allowSpeechConfig = useMemo(() => {
+		if (!currentApp?.parameters?.speech_to_text?.enabled) {
+			return false
+		}
+		return {
+			recording,
+			onRecordingChange: async nextRecording => {
+				if (nextRecording) {
+					try {
+						const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+						mediaRecorder.current = new MediaRecorder(stream)
+
+						mediaRecorder.current.ondataavailable = event => {
+							if (event.data.size > 0) {
+								recordedChunks.current = [...recordedChunks.current, event.data]
+							}
+						}
+
+						mediaRecorder.current.onstop = () => {
+							console.log('停止录音', recordedChunks)
+							const blob = new Blob(recordedChunks.current, { type: 'audio/webm' })
+							setAudio2TextLoading(true)
+							setContent('正在识别...')
+							audio2TextApi?.(blob as File)
+								.then(res => {
+									setContent(res.text)
+									recordedChunks.current = []
+								})
+								.catch(error => {
+									console.error('语音转文本错误', error)
+									message.error(`语音转文本错误: ${error}`)
+									setContent('')
+								})
+								.finally(() => {
+									setAudio2TextLoading(false)
+								})
+						}
+
+						mediaRecorder.current.start()
+					} catch (error) {
+						console.error('Error accessing microphone:', error)
+					}
+				} else {
+					mediaRecorder.current?.stop()
+				}
+
+				setRecording(nextRecording)
+			},
+		} as GetProp<typeof Sender, 'allowSpeech'>
+	}, [currentApp, recording, audio2TextApi])
+
+	// 是否允许文件上传
+	const enableFileUpload = currentApp?.parameters?.file_upload?.enabled
+
 	return (
 		<Sender
-			allowSpeech={
-				appParameters?.speech_to_text.enabled
-					? {
-							recording,
-							onRecordingChange: async nextRecording => {
-								if (nextRecording) {
-									try {
-										const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-										mediaRecorder.current = new MediaRecorder(stream)
-
-										mediaRecorder.current.ondataavailable = event => {
-											if (event.data.size > 0) {
-												recordedChunks.current = [...recordedChunks.current, event.data]
-											}
-										}
-
-										mediaRecorder.current.onstop = () => {
-											console.log('停止了', recordedChunks)
-											const blob = new Blob(recordedChunks.current, { type: 'audio/webm' })
-											setAudio2TextLoading(true)
-											setContent('正在识别...')
-											audio2TextApi?.(blob as File)
-												.then(res => {
-													setContent(res.text)
-													recordedChunks.current = []
-												})
-												.catch(error => {
-													console.error('语音转文本错误', error)
-													message.error(`语音转文本错误: ${error}`)
-													setContent('')
-												})
-												.finally(() => {
-													setAudio2TextLoading(false)
-												})
-										}
-
-										mediaRecorder.current.start()
-									} catch (error) {
-										console.error('Error accessing microphone:', error)
-									}
-								} else {
-									mediaRecorder.current?.stop()
-								}
-
-								setRecording(nextRecording)
-							},
-						}
-					: false
-			}
+			allowSpeech={allowSpeechConfig}
 			header={senderHeader}
 			value={content}
 			onChange={onChange}
 			prefix={
-				<Badge dot={files.length > 0 && !open}>
-					<Button
-						onClick={() => setOpen(!open)}
-						icon={<LinkOutlined />}
-					/>
-				</Badge>
+				enableFileUpload ? (
+					// 附件上传按钮
+					<Badge dot={files.length > 0 && !open}>
+						<Button
+							onClick={() => setOpen(!open)}
+							icon={<LinkOutlined className="text-theme-text" />}
+						/>
+					</Badge>
+				) : null
 			}
 			style={{
-				boxShadow: '0px -2px 12px 4px #efefef',
+				boxShadow: isLight ? '0px -2px 12px 4px var(--theme-border-color)' : 'none',
 			}}
 			loading={isRequesting}
 			disabled={audio2TextLoading}
 			className={className}
+			onPasteFile={
+				enableFileUpload
+					? (firstFile, files) => {
+							if (files?.length > 1) {
+								message.warning('暂不支持一次性上传多个文件，请逐个上传')
+								return
+							}
+							// 如果附件面板是关闭状态，则打开
+							if (!open) {
+								// 强制更新 立即打开 Attachments 面板，以供获取 attachmentsRef
+								flushSync(() => setOpen(true))
+							}
+							attachmentsRef.current?.upload(firstFile)
+						}
+					: undefined
+			}
 			onSubmit={async content => {
 				if (!content) {
 					message.error('内容不能为空')
@@ -282,10 +304,13 @@ export const MessageSender = (props: IMessageSenderProps) => {
 				await onSubmit(content, {
 					files:
 						files?.map(file => {
-							const fileType = getFileTypeByName(file.name)
+							const fileType = getDifyFileType(
+								file.name,
+								currentApp?.parameters?.file_upload?.allowed_file_types || [],
+							)
 							return {
 								...file,
-								type: fileType || 'document',
+								type: fileType || 'custom',
 								transfer_method: 'local_file',
 								upload_file_id: fileIdMap.get(file.uid) as string,
 							}

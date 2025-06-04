@@ -1,10 +1,31 @@
 {
-	"extends": "./tsconfig.prod.json",
 	"compilerOptions": {
-		"paths": {
-			"@dify-chat/api": ["../api/src/index.ts"],
-			"@dify-chat/core": ["../core/src/index.ts"],
-			"@dify-chat/helpers": ["../helpers/src/index.ts"]
+		"lib": ["DOM", "ES2021"],
+		"module": "ESNext",
+		"jsx": "react-jsx",
+		"strict": true,
+		"skipLibCheck": true,
+		"isolatedModules": true,
+		"resolveJsonModule": true,
+		"moduleResolution": "bundler",
+		"useDefineForClassFields": true,
+		"composite": true,
+		"rootDir": "src",
+		"outDir": "dist"
+	},
+	"include": ["src"],
+	"references": [
+		{
+			"path": "../api"
+		},
+		{
+			"path": "../core"
+		},
+		{
+			"path": "../helpers"
+		},
+		{
+			"path": "../theme"
 		}
-	}
+	]
 }

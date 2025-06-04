@@ -1,6 +1,7 @@
 import { defineConfig } from '@rsbuild/core'
 import { pluginLess } from '@rsbuild/plugin-less'
 import { pluginReact } from '@rsbuild/plugin-react'
+import { pluginSourceBuild } from '@rsbuild/plugin-source-build'
 import path from 'path'
 import tailwindcss from 'tailwindcss'
 
@@ -10,11 +11,16 @@ const tsconfigProdPath = path.resolve(__dirname, './tsconfig.prod.json')
 export default defineConfig({
 	source: {
 		tsconfigPath: process.env.NODE_ENV === 'development' ? tsconfigDevPath : tsconfigProdPath,
+		include: [{ not: /[\\/]core-js[\\/]/ }],
+	},
+	output: {
+		polyfill: 'entry',
 	},
 	html: {
 		template: path.resolve(__dirname, './public/template.html'),
 	},
 	plugins: [
+		pluginSourceBuild(),
 		pluginReact(),
 		pluginLess({
 			lessLoaderOptions: {

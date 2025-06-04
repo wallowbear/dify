@@ -1,6 +1,6 @@
 {
 	"name": "@dify-chat/core",
-	"version": "0.0.1",
+	"version": "0.3.0",
 	"type": "module",
 	"description": "Dify Chat 的核心包",
 	"author": {
@@ -19,11 +19,13 @@
 	},
 	"exports": {
 		".": {
+			"source": "./src/index.ts",
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
 			"require": "./dist/index.cjs"
 		}
 	},
+	"source": "./src/index.ts",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -41,6 +43,8 @@
 		"@biomejs/biome": "catalog:",
 		"@rslib/core": "catalog:",
 		"@types/node": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:",
 		"typescript": "catalog:",

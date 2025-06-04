@@ -1,8 +1,24 @@
 {
-	"extends": "./tsconfig.prod.json",
 	"compilerOptions": {
-		"paths": {
-			"@dify-chat/helpers": ["../helpers/src/index.ts"]
+		"lib": ["ES2021"],
+		"module": "ESNext",
+		"strict": true,
+		"skipLibCheck": true,
+		"isolatedModules": true,
+		"resolveJsonModule": true,
+		"moduleResolution": "bundler",
+		"useDefineForClassFields": true,
+		"composite": true,
+		"rootDir": "src",
+		"outDir": "dist"
+	},
+	"include": ["src"],
+	"references": [
+		{
+			"path": "../core"
+		},
+		{
+			"path": "../helpers"
 		}
-	}
+	]
 }

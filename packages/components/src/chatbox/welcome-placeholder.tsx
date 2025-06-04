@@ -1,21 +1,13 @@
-import {
-	AndroidFilled,
-	CommentOutlined,
-	EllipsisOutlined,
-	FireOutlined,
-	HeartOutlined,
-	ReadOutlined,
-	ShareAltOutlined,
-	SmileOutlined,
-} from '@ant-design/icons'
+import { EllipsisOutlined, FireOutlined, ShareAltOutlined } from '@ant-design/icons'
 import { Prompts, Welcome } from '@ant-design/x'
-import { IGetAppParametersResponse } from '@dify-chat/api'
-import { IDifyAppItem } from '@dify-chat/core'
+import { DifyApi } from '@dify-chat/api'
+import { useAppContext } from '@dify-chat/core'
 import { useIsMobile } from '@dify-chat/helpers'
 import { Button, FormInstance, GetProp, message, Space } from 'antd'
 import classNames from 'classnames'
 import { useMemo } from 'react'
 
+import LucideIcon from '../lucide-icon'
 import { validateAndGenErrMsgs } from '../utils'
 import AppInputWrapper from './app-input-wrapper'
 
@@ -32,10 +24,6 @@ interface IWelcomePlaceholderProps {
 	 */
 	showPrompts: boolean
 	/**
-	 * 应用参数
-	 */
-	appParameters?: IGetAppParametersResponse
-	/**
 	 * 点击提示项时触发的回调函数
 	 */
 	onPromptItemClick: GetProp<typeof Prompts, 'onItemClick'>
@@ -48,10 +36,6 @@ interface IWelcomePlaceholderProps {
 	 */
 	onStartConversation: (formValues: Record<string, unknown>) => void
 	/**
-	 * 表单数据
-	 */
-	user_input_form?: IGetAppParametersResponse['user_input_form']
-	/**
 	 * 当前对话 ID
 	 */
 	conversationId?: string
@@ -60,90 +44,48 @@ interface IWelcomePlaceholderProps {
 	 */
 	entryForm: FormInstance<Record<string, unknown>>
 	/**
-	 * 当前应用基本信息
+	 * 上传文件 API
 	 */
-	appConfig?: IDifyAppItem
+	uploadFileApi: DifyApi['uploadFile']
 }
 
 /**
  * 对话内容区的欢迎占位符
  */
 export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
-	const { onPromptItemClick, appParameters, showPrompts, appConfig } = props
+	const { onPromptItemClick, showPrompts, uploadFileApi } = props
 	const isMobile = useIsMobile()
+	const { currentApp } = useAppContext()
 
 	const placeholderPromptsItems: GetProp<typeof Prompts, 'items'> = useMemo(() => {
-		const DefaultPlaceholderPromptsItems = [
-			{
-				key: '1',
-				label: renderTitle(<FireOutlined style={{ color: '#FF4D4F' }} />, 'Hot Topics'),
-				description: 'What are you interested in?',
-				children: [
-					{
-						key: '1-1',
-						description: `What's new in X?`,
-					},
-					{
-						key: '1-2',
-						description: `What's AGI?`,
-					},
-					{
-						key: '1-3',
-						description: `Where is the doc?`,
-					},
-				],
-			},
-			{
-				key: '2',
-				label: renderTitle(<ReadOutlined style={{ color: '#1890FF' }} />, 'Design Guide'),
-				description: 'How to design a good product?',
-				children: [
-					{
-						key: '2-1',
-						icon: <HeartOutlined />,
-						description: `Know the well`,
-					},
-					{
-						key: '2-2',
-						icon: <SmileOutlined />,
-						description: `Set the AI role`,
-					},
-					{
-						key: '2-3',
-						icon: <CommentOutlined />,
-						description: `Express the feeling`,
-					},
-				],
-			},
-		]
-		if (appParameters?.suggested_questions?.length) {
+		if (currentApp?.parameters?.suggested_questions?.length) {
+			// 开场白标题
+			const suggestedTitle = currentApp?.parameters?.opening_statement || 'Hot Topics'
 			return [
 				{
-					key: 'remote',
-					label: renderTitle(<FireOutlined style={{ color: '#FF4D4F' }} />, 'Hot Topics'),
-					description: 'What are you interested in?',
-					children: appParameters.suggested_questions.map(item => {
+					key: 'suggested_question',
+					label: renderTitle(<FireOutlined style={{ color: '#FF4D4F' }} />, suggestedTitle),
+					description: '',
+					children: currentApp.parameters.suggested_questions.map((item, index) => {
 						return {
-							key: 'remote',
+							key: `suggested_question-${index}`,
 							description: item,
 						}
 					}),
 				},
 			]
 		}
-		if (isMobile) {
-			return DefaultPlaceholderPromptsItems.slice(0, 1)
-		}
-		return DefaultPlaceholderPromptsItems
-	}, [isMobile])
+		return []
+	}, [currentApp?.parameters?.suggested_questions, currentApp?.parameters?.opening_statement])
 
 	return (
-		<div className="flex justify-center w-full px-3 box-border mx-auto">
+		<div className="flex justify-center w-full px-3 box-border mx-auto mb-3">
 			<Space
+				size={12}
 				direction="vertical"
 				className={classNames({
 					'w-full md:!w-3/4': true,
-					'pb-6': !showPrompts && props.user_input_form?.length,
+					'pb-6': !showPrompts && currentApp?.parameters.user_input_form?.length,
 					'pt-3': showPrompts,
 				})}
 			>
@@ -151,11 +93,15 @@ export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
 					<Welcome
 						variant="borderless"
 						icon={
-							<div className="flex items-center justify-center rounded-[50%] w-16 h-16 border-gray-100 border-solid border-[1px] bg-[#eff0f5]">
-								<AndroidFilled className="text-3xl text-primary" />
+							<div className="flex items-center justify-center rounded-[50%] w-14 h-14 border-theme-border border-solid border-[1px] bg-theme-bg">
+								<LucideIcon
+									name="bot"
+									size={30}
+									className="text-3xl text-primary dark:text-theme-text"
+								/>
 							</div>
 						}
-						title={appParameters?.opening_statement || "Hello, I'm Dify Chat"}
+						title={"Hello, I'm Dify Chat"}
 						description="Base on Dify API, Dify Chat is a web app that can interact with AI."
 						extra={
 							<Space>
@@ -170,16 +116,14 @@ export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
 				<AppInputWrapper
 					formFilled={props.formFilled}
 					onStartConversation={props.onStartConversation}
-					user_input_form={props.user_input_form}
 					entryForm={props.entryForm}
-					conversationId={props.conversationId!}
-					appConfig={appConfig}
+					uploadFileApi={uploadFileApi!}
 				/>
 
-				{showPrompts ? (
+				{showPrompts && placeholderPromptsItems.length ? (
 					<Prompts
-						className="mt-4"
-						title="问一问："
+						// className="mt-3"
+						// title="问一问："
 						vertical={isMobile}
 						items={placeholderPromptsItems}
 						styles={{
@@ -189,9 +133,11 @@ export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
 							item: isMobile
 								? {
 										width: '100%',
+										color: 'var(--theme-text-color)',
 									}
 								: {
 										flex: 1,
+										color: 'var(--theme-text-color)',
 									},
 						}}
 						onItemClick={async (...params) => {

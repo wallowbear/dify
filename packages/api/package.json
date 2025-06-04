@@ -1,6 +1,6 @@
 {
 	"name": "@dify-chat/api",
-	"version": "0.0.1",
+	"version": "0.3.0",
 	"type": "module",
 	"author": {
 		"name": "lexmin0412",
@@ -11,13 +11,20 @@
 		"access": "public",
 		"registry": "https://registry.npmjs.org"
 	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lexmin0412/dify-chat.git",
+		"directory": "packages/api"
+	},
 	"exports": {
 		".": {
+			"source": "./src/index.ts",
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
 			"require": "./dist/index.cjs"
 		}
 	},
+	"source": "./src/index.ts",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -43,10 +50,12 @@
 		"vitest": "catalog:"
 	},
 	"dependencies": {
+		"@dify-chat/core": "workspace:^",
 		"@dify-chat/helpers": "workspace:^"
 	},
 	"peerDependencies": {
 		"react": ">=16.9.0",
-		"react-dom": ">=16.9.0"
+		"react-dom": ">=16.9.0",
+		"antd": ">=5.0.0"
 	}
 }

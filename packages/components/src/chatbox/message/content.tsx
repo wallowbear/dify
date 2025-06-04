@@ -1,6 +1,6 @@
 import { QuestionCircleOutlined, WarningOutlined } from '@ant-design/icons'
 import { IFile, IMessageItem4Render } from '@dify-chat/api'
-import { IDifyAppItem } from '@dify-chat/core'
+import { AppModeEnums, Roles, useAppContext } from '@dify-chat/core'
 import { Tooltip } from 'antd'
 import { useMemo } from 'react'
 
@@ -11,10 +11,6 @@ import MessageReferrence from './referrence'
 import WorkflowLogs from './workflow-logs'
 
 interface IMessageContentProps {
-	/**
-	 * 应用配置
-	 */
-	appConfig: IDifyAppItem
 	/**
 	 * 提交消息时触发的回调函数
 	 * @param nextContent 下一条消息的内容
@@ -38,7 +34,6 @@ interface IMessageContentProps {
  */
 export default function MessageContent(props: IMessageContentProps) {
 	const {
-		appConfig,
 		onSubmit,
 		messageItem: {
 			id,
@@ -52,16 +47,17 @@ export default function MessageContent(props: IMessageContentProps) {
 			role,
 		},
 	} = props
+	const { currentApp } = useAppContext()
 
 	const computedContent = useMemo(() => {
 		const likelyJSON = content.startsWith('{') && content.endsWith('}')
 		// 处理回复表单的自动生成消息
-		if (role === 'local' || (role === 'user' && likelyJSON)) {
-			if (appConfig.answerForm?.enabled && appConfig.answerForm?.feedbackText) {
+		if (role === Roles.LOCAL || (role === Roles.USER && likelyJSON)) {
+			if (currentApp?.config.answerForm?.enabled && currentApp.config.answerForm?.feedbackText) {
 				// 尝试通过 json 解析
 				try {
 					const parsedValue = JSON.parse(content)
-					return parsedValue.isFormSubmit ? appConfig.answerForm?.feedbackText : content
+					return parsedValue.isFormSubmit ? currentApp.config.answerForm?.feedbackText : content
 				} catch (error) {
 					console.log('computedContent json 解析失败', error)
 					return content
@@ -69,7 +65,7 @@ export default function MessageContent(props: IMessageContentProps) {
 			}
 		}
 		return content
-	}, [content, appConfig?.answerForm, role])
+	}, [content, currentApp?.config?.answerForm, role])
 
 	// 如果是错误状态，则直接展示错误信息
 	if (status === 'error') {
@@ -101,13 +97,19 @@ export default function MessageContent(props: IMessageContentProps) {
 		)
 	}
 
+	// 消息附件列表 用户文件展示在消息体上方，AI 消息文件展示在消息体下方
+	const fileList = files?.length ? (
+		<div className="mt-3">
+			<MessageFileList files={files} />
+		</div>
+	) : null
+
 	return (
 		<>
 			{/* Agent 思维链信息 */}
 			<ThoughtChain
 				uniqueKey={id as string}
 				items={agentThoughts}
-				className="mt-3"
 			/>
 
 			{/* 工作流执行日志 */}
@@ -116,20 +118,23 @@ export default function MessageContent(props: IMessageContentProps) {
 				status={workflows?.status}
 			/>
 
-			{/* 消息附件列表 */}
-			{files?.length ? (
-				<div className="mt-3">
-					<MessageFileList files={files} />
+			{/* 消息附件列表 - 用户消息 */}
+			{role === Roles.LOCAL || role === Roles.USER ? fileList : null}
+
+			{/* 消息主体文本内容 */}
+			{currentApp?.config?.info?.mode !== AppModeEnums.AGENT ||
+			role === Roles.LOCAL ||
+			role === Roles.USER ? (
+				<div className={role === Roles.LOCAL || role === Roles.USER ? '' : 'md:min-w-chat-card'}>
+					<MarkdownRenderer
+						markdownText={computedContent}
+						onSubmit={onSubmit}
+					/>
 				</div>
 			) : null}
 
-			{/* 消息主体文本内容 */}
-			<div className={role === 'local' || role === 'user' ? '' : 'md:min-w-chat-card'}>
-				<MarkdownRenderer
-					markdownText={computedContent}
-					onSubmit={onSubmit}
-				/>
-			</div>
+			{/* 消息附件列表 - AI 消息 */}
+			{role === Roles.AI ? fileList : null}
 
 			{/* 引用链接列表 */}
 			<MessageReferrence items={retrieverResources} />
