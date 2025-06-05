@@ -169,7 +169,7 @@ const MultiAppLayout: React.FC = () => {
 										trigger={['click']}
 										menu={{
 											selectedKeys: [selectedAppId],
-											items: [
+											items: [ 
 												...(appList?.map(item => {
 													const isSelected = selectedAppId === item.id
 													return {

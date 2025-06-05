@@ -13,13 +13,14 @@ export class UnauthorizedError extends Error {
 }
 
 export class XRequest {
-	constructor(options: { baseURL: string; apiKey: string }) {
+	constructor(options: { baseURL: string; apiKey: string; headers?: Record<string, string> }) {
 		this.options = options
 	}
 
 	options: {
 		baseURL: string
 		apiKey: string
+		headers?: Record<string, string>
 	}
 
 	async baseRequest(url: string, options: RequestInit) {
@@ -28,6 +29,7 @@ export class XRequest {
 			headers: {
 				...options.headers,
 				Authorization: `Bearer ${this.options.apiKey}`,
+				'Bwhr_Token': localStorage.getItem('sys_token') || '',
 			},
 		})
 		if (result.headers.get('X-Version')) {
@@ -50,6 +52,7 @@ export class XRequest {
 			headers: {
 				...options.headers,
 				'Content-Type': 'application/json',
+				'Bwhr_Token': localStorage.getItem('sys_token') || '',
 			},
 		})
 		return result.json()

@@ -6,7 +6,7 @@ import { AppModeEnums, IDifyAppItem } from '@dify-chat/core'
  */
 export const staticAppList: IDifyAppItem[] = [
 	{
-		id: '0.270357011315995',
+		id: 'RdWflQIhxnOryI4J',
 		info: {
 			name: '划划划',
 			description: '划划划',
@@ -19,7 +19,7 @@ export const staticAppList: IDifyAppItem[] = [
 		},
 	},
 	{
-		id: '0.2703570113159951',
+		id: 'ZJLZ9W5A46RyojVq',
 		info: {
 			name: '图表模板',
 			description: '图表模板',

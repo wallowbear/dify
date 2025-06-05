@@ -364,7 +364,7 @@ export default function ChatLayout(props: IChatLayoutProps) {
 		>
 			<div className={`w-full h-screen flex flex-col overflow-hidden bg-theme-bg`}>
 				{/* 头部 */}
-				<HeaderLayout
+				{/* <HeaderLayout
 					title={renderCenterTitle?.(currentApp?.config?.info)}
 					rightIcon={
 						isMobile ? (
@@ -379,10 +379,12 @@ export default function ChatLayout(props: IChatLayoutProps) {
 							</Dropdown>
 						) : null
 					}
-				/>
+				/> */}
+				{/* 头部占位 */}
+				<div style={{ height: '56px' }}></div>
 
 				{/* Main */}
-				<div className="flex-1 overflow-hidden flex rounded-t-3xl bg-theme-main-bg">
+				<div className="flex-1 overflow-hidden flex bg-theme-main-bg">
 					{appLoading || initLoading ? (
 						<div className="absolute w-full h-full left-0 top-0 z-50 flex items-center justify-center">
 							<Spin spinning />
