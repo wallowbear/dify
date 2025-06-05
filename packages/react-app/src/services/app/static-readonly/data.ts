@@ -8,27 +8,27 @@ export const staticAppList: IDifyAppItem[] = [
 	{
 		id: '0.270357011315995',
 		info: {
-			name: 'My Chatflow APP',
-			description: '我的 Chatflow 应用',
+			name: '划划划',
+			description: '划划划',
 			tags: [],
 			mode: AppModeEnums.CHATFLOW,
 		},
 		requestConfig: {
-			apiBase: 'https://api.dify.ai/v1',
-			apiKey: 'app-xxxxxxx',
+			apiBase: 'https://bwhrdemo.baowugroup.cn/special/ai/v1',
+			apiKey: 'app-BkFKoValB0qF1Z5ElqHMdMqu',
 		},
 	},
 	{
-		id: '0.28936574761079314',
+		id: '0.2703570113159951',
 		info: {
-			name: 'My Workflow APP',
-			description: '我的 Workflow 应用',
+			name: '图表模板',
+			description: '图表模板',
 			tags: [],
-			mode: AppModeEnums.WORKFLOW,
+			mode: AppModeEnums.CHATFLOW,
 		},
 		requestConfig: {
-			apiBase: 'http://127.0.0.1:5001/v1',
-			apiKey: 'app-xxxxxxx',
+			apiBase: 'https://bwhrdemo.baowugroup.cn/special/ai/v1',
+			apiKey: 'app-96iozMGy0tgwYXdTtoLUDM5G',
 		},
-	},
+	}
 ]

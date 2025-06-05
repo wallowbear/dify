@@ -688,6 +688,10 @@ export class DifyApi {
 			},
 		})
 	}
+
+	passportLogin = async () => {
+		return this.baseRequest.get('/passport',null,{"X-App-Code":"RdWflQIhxnOryI4J"})
+	}
 }
 
 /**

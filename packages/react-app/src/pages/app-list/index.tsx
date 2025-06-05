@@ -71,7 +71,7 @@ export default function AppListPage() {
 						className="px-3 md:px-6"
 					>
 						{list?.map(item => {
-							const hasTags = item?.tags?.length
+							const hasTags = item?.info?.tags?.length
 							return (
 								<Col
 									key={item.id}
@@ -94,21 +94,21 @@ export default function AppListPage() {
 													/>
 												</div>
 												<div className="flex-1 overflow-hidden ml-3 text-theme-text h-10 flex flex-col justify-between">
-													<div className="truncate font-semibold pr-4">{item.name}</div>
+													<div className="truncate font-semibold pr-4">{item.info.name}</div>
 													<div className="text-theme-desc text-xs mt-0.5">
-														{item.mode ? AppModeLabels[item.mode] : 'unknown'}
+														{item.info.mode ? AppModeLabels[item.info.mode] : 'unknown'}
 													</div>
 												</div>
 											</div>
 											<div className="text-sm mt-3 h-10 overflow-hidden text-ellipsis leading-5 whitespace-normal line-clamp-2 text-theme-desc">
-												{item.description || '暂无描述'}
+												{item.info.description || '暂无描述'}
 											</div>
 										</div>
 										<div className="flex items-center text-desc truncate mt-3 h-4">
 											{hasTags ? (
 												<>
 													<TagOutlined className="mr-2" />
-													{item.tags.join('、')}
+													{item.info.tags.join('、')}
 												</>
 											) : null}
 										</div>

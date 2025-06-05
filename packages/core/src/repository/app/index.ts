@@ -11,7 +11,7 @@ export interface IDifyAppItem {
 	/**
 	 * Dify 应用基本信息
 	 */
-	
+	info: {
 		/**
 		 * 应用名称
 		 */
@@ -28,7 +28,7 @@ export interface IDifyAppItem {
 		 * 应用标签
 		 */ 	
 		tags: string[]
-	
+	}
 	/**
 	 * 请求配置
 	 */
