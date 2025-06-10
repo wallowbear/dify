@@ -39,7 +39,7 @@ export const DEFAULT_APP_SITE_SETTING: IDifyAppSiteSetting = {
 	default_language: '',
 	privacy_policy: '',
 	custom_disclaimer: '',
-	show_workflow_steps: false,
+	show_workflow_steps: false, // 是否显示工作流步骤
 	use_icon_as_answer_icon: false,
 }
 
@@ -110,7 +110,7 @@ const DEFAULT_APP_CONTEXT: IAppContext = {
 			default_language: '',
 			privacy_policy: ',',
 			custom_disclaimer: '',
-			show_workflow_steps: false,
+			show_workflow_steps: true,
 			use_icon_as_answer_icon: false,
 		},
 	},
