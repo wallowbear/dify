@@ -6,7 +6,7 @@ import ReactEcharts from 'echarts-for-react'
 import { Element, Root, Text } from 'hast'
 import 'katex/dist/katex.min.css'
 import { flow } from 'lodash-es'
-import React, { AnchorHTMLAttributes, Component, memo, useMemo, useRef, useState } from 'react'
+import React, { Component, memo, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { atomOneDark, atomOneLight } from 'react-syntax-highlighter/dist/esm/styles/hljs'
@@ -110,14 +110,7 @@ export function PreCode(props: { children: React.ReactNode }) {
 // visit https://reactjs.org/docs/error-decoder.html?invariant=185 for the full message
 // or use the non-minified dev environment for full errors and additional helpful warnings.
 
-interface ICodeBlockProps {
-	inline?: boolean
-	className?: string
-	children?: React.ReactNode
-	[key: string]: unknown
-}
-
-const CodeBlock = memo(({ inline, className, children, ...props }: ICodeBlockProps) => {
+const CodeBlock = memo(({ inline, className, children, ...props }: any) => {
 	const { isLight } = useThemeContext()
 	const [isSVG, setIsSVG] = useState(true)
 	const match = /language-(\w+)/.exec(className || '')
@@ -226,46 +219,68 @@ const ScriptBlock = memo((props: IScriptBlockProps) => {
 })
 ScriptBlock.displayName = 'ScriptBlock'
 
-interface IParagraphProps {
-	node?: HTMLParagraphElement
-	children?: React.ReactNode
-}
+// interface IParagraphProps {
+// 	node?: HTMLParagraphElement
+// 	children?: React.ReactNode
+// }
 
-const Paragraph = (paragraph: IParagraphProps) => {
-	const { node } = paragraph
-	const children_node = node?.children
-	if (
-		children_node &&
-		children_node[0] &&
-		'tagName' in children_node[0]
-	) {
-		return (
-			<>
-				{/* <ImageGallery srcs={[children_node[0].properties.src]} /> */}
-				{Array.isArray(paragraph.children) ? <p>{paragraph.children.slice(1)}</p> : null}
-			</>
-		)
+const Paragraph = (paragraph: any) => {
+	const { node }: any = paragraph
+	const children_node = node.children
+	// 检查是否有a标签作为子元素
+	// const hasATag = Array.isArray(node?.children) && node.children.some((child: any) => 
+	// 	child.type === 'element' && child.tagName === 'a'
+	// )
+	
+	if (children_node && children_node[0] && 'tagName' in children_node[0] && children_node[0].tagName === 'a')  {
+		// 如果包含a标签，让React Markdown重新处理子元素
+		return <>{paragraph.children}</>
 	}
-	return <p>{paragraph.children}</p>
+	
+	if (children_node && children_node[0] && 'tagName' in children_node[0] && children_node[0].tagName === 'img') {
+		return (
+		  <div className="markdown-img-wrapper">
+			<ImageBlock src={children_node[0].properties.src} />
+			{
+			  Array.isArray(paragraph.children) && paragraph.children.length > 1 && (
+				<div className="mt-2">{paragraph.children.slice(1)}</div>
+			  )
+			}
+		  </div>
+		)
+	  }
+	  return <p>{paragraph.children}</p>
 }
 
 
-interface ILinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
-	node: HTMLAnchorElement
-	href?: string
-	target?: string
-}
 
-const Link = ({ node, ...props }: ILinkProps) => {
-	const firstChild = node.children[0]
+const Link = ({ node, children, ...props }: any) => {
+	
+	// 参考工作版本的实现方式
+	const handleClick = (e: React.MouseEvent) => {
+		e.preventDefault()
+		// Send message to parent window if inner-link attribute exists
+		if (props?.['link-message'] !== undefined) {
+
+			window.parent.postMessage({
+				type: 'LINK_CLICK',
+				href: props.href,
+				text: node?.children?.[0]?.value || 'Download',
+			}, '*')
+		}
+		// Use normal link behavior if no inner-link attribute
+		else if (props.href) {
+			window.open(props.href, '_blank')
+		}
+	}
+
 	return (
-		<a
-			{...props}
-			target="_blank"
-			className="cursor-pointer underline !decoration-primary-700 decoration-dashed px-1"
+		<a 
+			{...props} 
+			onClick={handleClick} 
+			className="cursor-pointer underline !decoration-primary-700 decoration-dashed"
 		>
-			{/* @ts-expect-error FIXME: 类型错误待解决 */}
-			{firstChild ? firstChild?.value : 'Download'}
+			{node?.children?.[0] ? node.children[0]?.value : 'Download'}
 		</a>
 	)
 }

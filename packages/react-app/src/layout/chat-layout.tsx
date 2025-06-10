@@ -364,7 +364,8 @@ export default function ChatLayout(props: IChatLayoutProps) {
 		>
 			<div className={`w-full h-screen flex flex-col overflow-hidden bg-theme-bg`}>
 				{/* 头部 */}
-				{/* <HeaderLayout
+				{/*  */}
+				<HeaderLayout
 					title={renderCenterTitle?.(currentApp?.config?.info)}
 					rightIcon={
 						isMobile ? (
@@ -379,9 +380,9 @@ export default function ChatLayout(props: IChatLayoutProps) {
 							</Dropdown>
 						) : null
 					}
-				/> */}
+				/>
 				{/* 头部占位 */}
-				<div style={{ height: '56px' }}></div>
+				{/*<div style={{ height: '56px' }}></div>*/}
 
 				{/* Main */}
 				<div className="flex-1 overflow-hidden flex bg-theme-main-bg">
