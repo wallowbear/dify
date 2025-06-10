@@ -56,7 +56,7 @@ export default function App() {
 						user: userId,
 						// 默认使用 localstorage, 如果需要使用其他存储方式，可以实现 DifyAppStore 接口后传入，异步接口实现参考 src/services/app/restful.ts
 						appService: new DifyAppService(),
-						enableSetting: false,
+						enableSetting: true,
 					}}
 				>
 					<LayoutIndex />

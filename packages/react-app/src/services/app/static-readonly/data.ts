@@ -30,5 +30,18 @@ export const staticAppList: IDifyAppItem[] = [
 			apiBase: 'https://bwhrdemo.baowugroup.cn/special/ai/v1',
 			apiKey: 'app-96iozMGy0tgwYXdTtoLUDM5G',
 		},
+	},
+	{
+		id: 'NXu2Zvi5IWyoDKOq',
+		info: {
+			name: 'AI功能地图',
+			description: 'AI功能地图',
+			tags: [],
+			mode: AppModeEnums.CHATFLOW,
+		},
+		requestConfig: {
+			apiBase: 'https://bwhrdemo.baowugroup.cn/special/ai/v1',
+			apiKey: 'app-pLRTyNFSldXn17PWucUB55Lr',
+		},
 	}
 ]
