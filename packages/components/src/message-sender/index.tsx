@@ -8,7 +8,7 @@ import { RcFile } from 'antd/es/upload'
 import { useMemo, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 
-import { FileTypeMap, getDifyFileType, getFileExtByName } from './utils'
+import { FileTypeMap, getFileExtByName, getFileTypeByName } from './utils'
 
 interface IMessageSenderProps {
 	/**
@@ -44,7 +44,20 @@ interface IMessageSenderProps {
 	 */
 	onCancel: () => void
 }
-
+function getSupportedMimeType() {
+	const types = [
+	  'audio/webm;codecs=opus',
+	  'audio/webm',
+	  'audio/mp4',
+	  'audio/mpeg',
+	  'audio/aac',
+	  'audio/wav',
+	];
+	for (const type of types) {
+	  if (MediaRecorder.isTypeSupported(type)) return type;
+	}
+	return 'audio/webm';
+  }
 /**
  * 用户消息发送区
  */
@@ -70,7 +83,7 @@ export const MessageSender = (props: IMessageSenderProps) => {
 			return []
 		}
 		const result: string[] = []
-		currentApp.parameters.file_upload.allowed_file_types?.forEach(item => {
+		currentApp.parameters.file_upload.allowed_file_types.forEach(item => {
 			if (FileTypeMap.get(item)) {
 				result.push(...((FileTypeMap.get(item) as string[]) || []))
 			}
@@ -199,58 +212,88 @@ export const MessageSender = (props: IMessageSenderProps) => {
 	 * 语音转文本配置
 	 */
 	const allowSpeechConfig = useMemo(() => {
-		if (!currentApp?.parameters?.speech_to_text?.enabled) {
-			return false
-		}
 		return {
-			recording,
-			onRecordingChange: async nextRecording => {
-				if (nextRecording) {
-					try {
-						const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-						mediaRecorder.current = new MediaRecorder(stream)
-
-						mediaRecorder.current.ondataavailable = event => {
-							if (event.data.size > 0) {
-								recordedChunks.current = [...recordedChunks.current, event.data]
-							}
-						}
-
-						mediaRecorder.current.onstop = () => {
-							console.log('停止录音', recordedChunks)
-							const blob = new Blob(recordedChunks.current, { type: 'audio/webm' })
-							setAudio2TextLoading(true)
-							setContent('正在识别...')
-							audio2TextApi?.(blob as File)
-								.then(res => {
-									setContent(res.text)
-									recordedChunks.current = []
-								})
-								.catch(error => {
-									console.error('语音转文本错误', error)
-									message.error(`语音转文本错误: ${error}`)
-									setContent('')
-								})
-								.finally(() => {
-									setAudio2TextLoading(false)
-								})
-						}
-
-						mediaRecorder.current.start()
-					} catch (error) {
-						console.error('Error accessing microphone:', error)
-					}
-				} else {
-					mediaRecorder.current?.stop()
-				}
-
-				setRecording(nextRecording)
-			},
-		} as GetProp<typeof Sender, 'allowSpeech'>
-	}, [currentApp, recording, audio2TextApi])
+		  recording,
+		  onRecordingChange: async (nextRecording) => {
+			if (nextRecording) {
+			  try {
+				// 获取麦克风权限
+				const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+	  
+				// 动态选择兼容的 MIME 类型
+				const mimeType = getSupportedMimeType();
+	  
+				// 创建 AudioContext 用于重采样
+				const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({
+				  sampleRate: 16000, // 固定采样率
+				});
+	  
+				const source = audioContext.createMediaStreamSource(stream);
+				const destination = audioContext.createMediaStreamDestination();
+	  
+				// 设置为单声道
+				const channelSplitter = audioContext.createChannelSplitter(2);
+				const channelMerger = audioContext.createChannelMerger(2);
+	  
+				source.connect(channelSplitter);
+				channelSplitter.connect(channelMerger, 0, 0); // 只保留左声道
+				channelSplitter.connect(channelMerger, 0, 1); // 复制左声道到右声道（可选）
+				channelMerger.connect(destination);
+	  
+				// 创建 MediaRecorder，使用兼容的音频格式
+				mediaRecorder.current = new MediaRecorder(destination.stream, { mimeType });
+	  
+				recordedChunks.current = [];
+	  
+				mediaRecorder.current.ondataavailable = (event) => {
+				  if (event.data.size > 0) {
+					recordedChunks.current.push(event.data);
+				  }
+				};
+	  
+				mediaRecorder.current.onstop = () => {
+				  const blob = new Blob(recordedChunks.current, { type: mimeType });
+				  setAudio2TextLoading(true);
+				  setContent('正在识别...');
+	  
+				  // 转成 File 对象上传
+				  const file = new File([blob], `recording-${Date.now()}.webm`, { type: mimeType });
+	  
+				  audio2TextApi?.(file)
+					.then((res) => {
+					  setContent(res.text);
+					  recordedChunks.current = [];
+					})
+					.catch((error) => {
+					  console.error('语音转文本错误', error);
+					  message.error(`语音转文本错误: ${error}`);
+					  setContent('');
+					})
+					.finally(() => {
+					  setAudio2TextLoading(false);
+					});
+	  
+				  // 关闭 AudioContext（iOS 上不关闭可能导致崩溃）
+				  audioContext.close();
+				};
+	  
+				mediaRecorder.current.start();
+			  } catch (error) {
+				console.error('Error accessing microphone:', error);
+				message.error('无法访问麦克风，请检查权限');
+			  }
+			} else {
+			  mediaRecorder.current?.stop();
+			}
+	  
+			setRecording(nextRecording);
+		  },
+		} as GetProp<typeof Sender, 'allowSpeech'>;
+	  }, [currentApp, recording, audio2TextApi]);
 
 	// 是否允许文件上传
-	const enableFileUpload = currentApp?.parameters?.file_upload?.enabled
+	// const enableFileUpload = currentApp?.parameters?.file_upload?.enabled
+	const enableFileUpload = true
 
 	return (
 		<Sender
@@ -304,13 +347,10 @@ export const MessageSender = (props: IMessageSenderProps) => {
 				await onSubmit(content, {
 					files:
 						files?.map(file => {
-							const fileType = getDifyFileType(
-								file.name,
-								currentApp?.parameters?.file_upload?.allowed_file_types || [],
-							)
+							const fileType = getFileTypeByName(file.name)
 							return {
 								...file,
-								type: fileType || 'custom',
+								type: fileType || 'document',
 								transfer_method: 'local_file',
 								upload_file_id: fileIdMap.get(file.uid) as string,
 							}

@@ -366,9 +366,9 @@ export default function ChatLayout(props: IChatLayoutProps) {
 				{/* 头部 */}
 				{/*  */}
 				<HeaderLayout
-					title={renderCenterTitle?.(currentApp?.config?.info)}
+					title={null}
 					rightIcon={
-						isMobile ? (
+						
 							<Dropdown
 								menu={{
 									className: '!pb-3 w-[80vw]',
@@ -378,7 +378,7 @@ export default function ChatLayout(props: IChatLayoutProps) {
 							>
 								<MenuOutlined className="text-xl" />
 							</Dropdown>
-						) : null
+						
 					}
 				/>
 				{/* 头部占位 */}

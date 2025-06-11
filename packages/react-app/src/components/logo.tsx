@@ -44,7 +44,7 @@ export const Logo = (props: ILogoProps) => {
 	return (
 		<div className="flex h-16 items-center justify-start !py-0 box-border">
 			<div className="h-full flex items-center flex-1 overflow-hidden">
-				<img
+				{/* <img
 					className="w-8 h-8 inline-block"
 					src={LogoImage}
 					draggable={false}
@@ -54,9 +54,9 @@ export const Logo = (props: ILogoProps) => {
 					<span className="inline-block my-0 ml-3 font-bold text-lg text-theme-text">
 						Dify Chat
 					</span>
-				) : null}
+				) : null} */}
 			</div>
-			{!hideGithubIcon && (
+			{/* {!hideGithubIcon && (
 				<Button
 					type="link"
 					href="https://github.com/lexmin0412/dify-chat"
@@ -65,7 +65,7 @@ export const Logo = (props: ILogoProps) => {
 				>
 					<GithubOutlined className="text-lg cursor-pointer text-theme-text" />
 				</Button>
-			)}
+			)} */}
 		</div>
 	)
 }
