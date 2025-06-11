@@ -371,7 +371,7 @@ export default function ChatLayout(props: IChatLayoutProps) {
 						
 							<Dropdown
 								menu={{
-									className: '!pb-3 w-[80vw]',
+									className: '!pb-3 w-[80vw] !mt-3',
 									activeKey: currentConversationId,
 									items: mobileMenuItems,
 								}}

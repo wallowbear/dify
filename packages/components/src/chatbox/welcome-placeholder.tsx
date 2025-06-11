@@ -101,13 +101,14 @@ export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
 								/>
 							</div>
 						}
-						title={"Hello, I'm Dify Chat"}
-						description="Base on Dify API, Dify Chat is a web app that can interact with AI."
+						title={"你好，我是你的智能助手"}
+						description="是一个可以与AI交互的Web应用。"
 						extra={
-							<Space>
-								<Button icon={<ShareAltOutlined />} />
-								<Button icon={<EllipsisOutlined />} />
-							</Space>
+							''
+							// <Space>
+							// 	<Button icon={<ShareAltOutlined />} />
+							// 	<Button icon={<EllipsisOutlined />} />
+							// </Space>
 						}
 					/>
 				) : null}

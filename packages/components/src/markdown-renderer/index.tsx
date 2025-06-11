@@ -359,11 +359,8 @@ export function MarkdownRenderer(props: {
 					...(props.customDisallowedElements || []),
 				]}
 				components={{
-					// @ts-expect-error FIXME: 类型错误待解决
 					code: CodeBlock,
-					// @ts-expect-error FIXME: 类型错误待解决
 					a: Link,
-					// @ts-expect-error FIXME: 类型错误待解决
 					p: Paragraph,
 					form: props => (
 						<MarkdownForm

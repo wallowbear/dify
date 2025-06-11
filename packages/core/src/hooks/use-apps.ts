@@ -110,7 +110,7 @@ const DEFAULT_APP_CONTEXT: IAppContext = {
 			default_language: '',
 			privacy_policy: ',',
 			custom_disclaimer: '',
-			show_workflow_steps: true,
+			show_workflow_steps: false,
 			use_icon_as_answer_icon: false,
 		},
 	},
