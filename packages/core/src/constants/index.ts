@@ -1,4 +1,5 @@
 export * from './app'
+export * from './domains'
 
 /**
  * 消息角色

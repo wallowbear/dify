@@ -1,8 +1,8 @@
-import { DifyAppStore, type IDifyAppItem } from '@dify-chat/core'
+import { DifyAppStore, type IDifyAppItem, DOMAINS, API_PATHS } from '@dify-chat/core'
 
 import { BaseRequest } from '@/services/base-request'
 
-const API_BASE_URL = 'https://bwhrdemo.baowugroup.cn/special/ai/console/api'
+const API_BASE_URL = `${DOMAINS.BWHR_DEMO}${API_PATHS.CONSOLE}`
 
 const request = new BaseRequest({
 	baseURL: API_BASE_URL,
