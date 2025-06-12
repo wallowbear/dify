@@ -1,6 +1,6 @@
 import { DifyAppStoreReadonly, IDifyAppItem } from '@dify-chat/core'
 
-import { staticAppList } from './data'
+import { getStaticAppList } from './data'
 
 /**
  * 应用列表的静态配置实现
@@ -10,11 +10,12 @@ class DifyAppService extends DifyAppStoreReadonly {
 	public readonly = true as const
 
 	async getApps(): Promise<IDifyAppItem[]> {
-		return Promise.resolve(staticAppList)
+		return await getStaticAppList()
 	}
 
 	async getApp(id: string): Promise<IDifyAppItem | undefined> {
-		return Promise.resolve(staticAppList.find(config => config.id === id))
+		const appList = await getStaticAppList()
+		return appList.find(config => config.id === id)
 	}
 }
 
