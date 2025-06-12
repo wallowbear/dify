@@ -11,7 +11,7 @@ import { useDifyChat } from '@dify-chat/core'
 import { useIsMobile } from '@dify-chat/helpers'
 import { useMount, useRequest } from 'ahooks'
 import { Dropdown, message } from 'antd'
-import { useHistory, useParams } from 'pure-react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
 
@@ -22,7 +22,7 @@ import MainLayout from './main-layout'
 const MultiAppLayout: React.FC = () => {
 	const { ...difyChatContext } = useDifyChat()
 	const { user, appService } = difyChatContext as IDifyChatContextMultiApp
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const [difyApi] = useState(
 		createDifyApiInstance({
@@ -53,7 +53,7 @@ const MultiAppLayout: React.FC = () => {
 				if (isMobile) {
 					// 移动端如果没有应用，直接跳转应用列表页
 					if (!result?.length) {
-						history.replace('/apps')
+						navigate('/apps', { replace: true })
 						return Promise.resolve([])
 					}
 				}
@@ -155,7 +155,7 @@ const MultiAppLayout: React.FC = () => {
 							<span
 								className="cursor-pointer inline-block shrink-0"
 								onClick={() => {
-									history.push('/apps')
+									navigate('/apps')
 								}}
 							>
 								应用列表
@@ -180,7 +180,7 @@ const MultiAppLayout: React.FC = () => {
 															</div>
 														),
 														onClick: () => {
-															history.push(`/app/${item.id}`)
+															navigate(`/app/${item.id}`)
 															setSelectedAppId(item.id)
 														},
 														icon: (

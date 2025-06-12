@@ -25,7 +25,7 @@ import {
 	Tooltip,
 } from 'antd'
 import dayjs from 'dayjs'
-import { useSearchParams } from 'pure-react-router'
+import { useSearchParams } from 'react-router-dom'
 import React, { useEffect, useMemo, useState } from 'react'
 
 import ChatboxWrapper from '@/components/chatbox-wrapper'

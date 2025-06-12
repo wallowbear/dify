@@ -1,24 +1,34 @@
 import { useDifyChat } from '@dify-chat/core'
-import { Route, useHistory } from 'pure-react-router'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
+import AppListPage from '../pages/app-list'
+import ChatPage from '../pages/chat'
 
 /**
  * 处理路由的布局容器
  */
 export default function LayoutIndex() {
-	const history = useHistory()
+	const navigate = useNavigate()
+	const location = useLocation()
 	const { mode } = useDifyChat()
 
 	useEffect(() => {
-		const pathname = history.location.pathname
+		const pathname = location.pathname
 		if (pathname === '' || pathname === '/') {
 			if (mode === 'singleApp') {
-				history.push('/chat')
+				navigate('/chat')
 			} else if (mode === 'multiApp') {
-				history.push('/apps')
+				navigate('/apps')
 			}
 		}
-	}, [history, mode])
+	}, [navigate, location, mode])
 
-	return <Route />
+	return (
+		<Routes>
+			<Route path="/chat" element={<ChatPage />} />
+			<Route path="/app/:appId" element={<ChatPage />} />
+			<Route path="/apps" element={<AppListPage />} />
+			<Route path="*" element={<AppListPage />} />
+		</Routes>
+	)
 }

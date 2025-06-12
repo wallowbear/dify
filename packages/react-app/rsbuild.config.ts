@@ -15,6 +15,7 @@ export default defineConfig({
 	},
 	output: {
 		polyfill: 'entry',
+		assetPrefix: '/dify-chat/',
 	},
 	html: {
 		template: path.resolve(__dirname, './public/template.html'),

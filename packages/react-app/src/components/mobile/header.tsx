@@ -1,5 +1,5 @@
 import { useDifyChat } from '@dify-chat/core'
-import { Link } from 'pure-react-router'
+import { Link } from 'react-router-dom'
 
 import { GithubIcon, LogoIcon } from '@/components/logo'
 

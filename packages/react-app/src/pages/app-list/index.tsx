@@ -10,7 +10,7 @@ import {
 import { useIsMobile } from '@dify-chat/helpers'
 import { useRequest } from 'ahooks'
 import { Button, Col, Dropdown, Empty, message, Row } from 'antd'
-import { useHistory } from 'pure-react-router'
+import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 import { AppEditDrawer } from '@/components/app-edit-drawer'
@@ -18,7 +18,7 @@ import { AppDetailDrawerModeEnum } from '@/components/app-manage-drawer'
 import HeaderLayout from '@/layout/header'
 
 export default function AppListPage() {
-	const history = useHistory()
+	const navigate = useNavigate()
 	const { appService, mode, enableSetting } = useDifyChat() as IDifyChatContextMultiApp
 	const isMobile = useIsMobile()
 	const [appEditDrawerOpen, setAppEditDrawerOpen] = useState(false)
@@ -45,7 +45,7 @@ export default function AppListPage() {
 		} else {
 			// FIXME: 若不加定时器，URL 会更新但是页面 UI 仍然停在当前页面
 			setTimeout(() => {
-				history.push('/chat')
+				navigate('/chat')
 			}, 200)
 		}
 	}, [])
@@ -83,7 +83,7 @@ export default function AppListPage() {
 									>
 										<div
 											onClick={() => {
-												history.push(`/app/${item.id}`)
+												navigate(`/app/${item.id}`)
 											}}
 										>
 											<div className="flex items-center overflow-hidden">

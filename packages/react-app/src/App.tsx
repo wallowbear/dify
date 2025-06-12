@@ -4,23 +4,15 @@ import { useThemeContext } from '@dify-chat/theme'
 import FingerPrintJS from '@fingerprintjs/fingerprintjs'
 import { useMount } from 'ahooks'
 import { theme as antdTheme, ConfigProvider } from 'antd'
-import { BrowserRouter, type IRoute } from 'pure-react-router'
+import { HashRouter } from 'react-router-dom'
 import { useState } from 'react'
 
 import './App.css'
 import LayoutIndex from './layout'
-import AppListPage from './pages/app-list'
-import ChatPage from './pages/chat'
 import DifyAppService from './services/app/static-readonly'
 
 // 初始化响应式配置
 initResponsiveConfig()
-
-const routes: IRoute[] = [
-	{ path: '/chat', component: () => <ChatPage /> },
-	{ path: '/app/:appId', component: () => <ChatPage /> },
-	{ path: '/apps', component: () => <AppListPage /> },
-]
 
 /**
  * Dify Chat 的最小应用实例
@@ -46,10 +38,7 @@ export default function App() {
 				algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
 			}}
 		>
-			<BrowserRouter
-				basename="/dify-chat"
-				routes={routes}
-			>
+			<HashRouter>
 				<DifyChatProvider
 					value={{
 						mode: 'multiApp',
@@ -61,7 +50,7 @@ export default function App() {
 				>
 					<LayoutIndex />
 				</DifyChatProvider>
-			</BrowserRouter>
+			</HashRouter>
 		</ConfigProvider>
 	)
 }

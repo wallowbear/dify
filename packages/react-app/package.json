@@ -32,6 +32,7 @@
 		"pure-react-router": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:",
+		"react-router-dom": "catalog:",
 		"semver": "catalog:"
 	},
 	"devDependencies": {

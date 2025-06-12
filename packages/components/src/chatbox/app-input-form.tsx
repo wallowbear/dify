@@ -3,7 +3,7 @@ import { useAppContext, useDifyChat } from '@dify-chat/core'
 import { useConversationsContext } from '@dify-chat/core'
 import { isTempId, unParseGzipString } from '@dify-chat/helpers'
 import { Form, FormInstance, FormItemProps, Input, InputNumber, message, Select } from 'antd'
-import { useHistory, useParams, useSearchParams } from 'pure-react-router'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 
 import FileUpload, { IUploadFileItem } from './form-controls/file-upload'
@@ -44,9 +44,9 @@ export default function AppInputForm(props: IAppInputFormProps) {
 	const { currentApp } = useAppContext()
 	const { currentConversationId, currentConversationInfo, setConversations } =
 		useConversationsContext()
-	const history = useHistory()
+	const navigate = useNavigate()
 	const { appId } = useParams<{ appId: string }>()
-	const searchParams = useSearchParams()
+	const [searchParams, setSearchParams] = useSearchParams()
 	const [userInputItems, setUserInputItems] = useState<IConversationEntryFormItem[]>([])
 	const cachedSearchParams = useRef<URLSearchParams>(new URLSearchParams(searchParams))
 	const { mode } = useDifyChat()
@@ -133,9 +133,9 @@ export default function AppInputForm(props: IAppInputFormProps) {
 				? `?${cachedSearchParams.current.toString()}`
 				: ''
 			if (mode === 'multiApp') {
-				history.push(`/app/${appId}${searchString}`)
+				navigate(`/app/${appId}${searchString}`)
 			} else {
-				history.push(`/chat${searchString}`)
+				navigate(`/chat${searchString}`)
 			}
 		}
 	}, [currentApp?.parameters.user_input_form, currentConversationInfo])

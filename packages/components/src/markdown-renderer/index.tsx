@@ -255,7 +255,7 @@ const Paragraph = (paragraph: any) => {
 
 
 const Link = ({ node, children, ...props }: any) => {
-	
+	console.log(node, children, props)
 	// 参考工作版本的实现方式
 	const handleClick = (e: React.MouseEvent) => {
 		e.preventDefault()
