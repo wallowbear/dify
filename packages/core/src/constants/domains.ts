@@ -3,9 +3,9 @@
  */
 export const DOMAINS = {
 	/**
-	 * 宝武人资演示域名
+	 * 主要业务域名
 	 */
-	BWHR_DEMO: 'https://bwhrdemo.baowugroup.cn',
+	URL: 'https://bwhrdemo.baowugroup.cn',
 	/**
 	 * Dify 官方域名
 	 */

@@ -14,7 +14,7 @@ export const staticAppList: IDifyAppItem[] = [
 			mode: AppModeEnums.CHATFLOW,
 		},
 		requestConfig: {
-			apiBase: `${DOMAINS.BWHR_DEMO}${API_PATHS.V1}`,
+			apiBase: `${DOMAINS.URL}${API_PATHS.V1}`,
 			apiKey: 'app-BkFKoValB0qF1Z5ElqHMdMqu',
 		},
 	},
@@ -27,7 +27,7 @@ export const staticAppList: IDifyAppItem[] = [
 			mode: AppModeEnums.CHATFLOW,
 		},
 		requestConfig: {
-			apiBase: `${DOMAINS.BWHR_DEMO}${API_PATHS.V1}`,
+			apiBase: `${DOMAINS.URL}${API_PATHS.V1}`,
 			apiKey: 'app-96iozMGy0tgwYXdTtoLUDM5G',
 		},
 	},
@@ -40,7 +40,7 @@ export const staticAppList: IDifyAppItem[] = [
 			mode: AppModeEnums.CHATFLOW,
 		},
 		requestConfig: {
-			apiBase: `${DOMAINS.BWHR_DEMO}${API_PATHS.V1}`,
+			apiBase: `${DOMAINS.URL}${API_PATHS.V1}`,
 			apiKey: 'app-pLRTyNFSldXn17PWucUB55Lr',
 		},
 	}
