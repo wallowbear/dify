@@ -115,8 +115,7 @@ export const Chatbox = (props: ChatboxProps) => {
 	const roles: GetProp<typeof Bubble.List, 'roles'> = {
 		ai: {
 			placement: 'start',
-			avatar: !isMobile
-				? {
+			avatar: {
 						icon: aiIcon,
 						style: {
 							background: isDark ? 'transparent' : '#fde3cf',
@@ -125,18 +124,15 @@ export const Chatbox = (props: ChatboxProps) => {
 							color: isDark ? 'var(--theme-text-color)' : '#666',
 						},
 					}
-				: undefined,
-			style: isMobile
-				? undefined
-				: {
+				,
+			style: {
 						// 减去一个头像的宽度
 						maxWidth: 'calc(100% - 44px)',
 					},
 		},
 		user: {
 			placement: 'end',
-			avatar: !isMobile
-				? {
+			avatar: {
 						icon: (
 							<LucideIcon
 								name="user"
@@ -147,10 +143,8 @@ export const Chatbox = (props: ChatboxProps) => {
 							background: '#87d068',
 						},
 					}
-				: undefined,
-			style: isMobile
-				? undefined
-				: {
+				,
+			style: {
 						// 减去一个头像的宽度
 						maxWidth: 'calc(100% - 44px)',
 						marginLeft: '44px',
