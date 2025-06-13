@@ -46,10 +46,8 @@ const MultiAppLayout: React.FC = () => {
 		},
 		{
 			manual: true,
-			onSuccess: result => {
-				flushSync(() => {
-					setAppList(result)
-				})
+			onSuccess: async (result) => {
+				
 				if (isMobile) {
 					// 移动端如果没有应用，直接跳转应用列表页
 					if (!result?.length) {
@@ -58,11 +56,28 @@ const MultiAppLayout: React.FC = () => {
 					}
 				}
 
+				const updatedResult = [...result]
+
 				if (appId) {
+					const appData = await appService.getApp(appId as string)
 					setSelectedAppId(appId as string)
+					// 更新result中对应的app数据
+					const index = updatedResult.findIndex(item => item.id === appId)
+					if (index !== -1 && appData) {
+						updatedResult[index] = { ...updatedResult[index], ...appData }
+					}
 				} else if (!selectedAppId && result?.length) {
+					const appData = await appService.getApp(result[0]?.id as string)
 					setSelectedAppId(result[0]?.id || '')
+					// 更新result中对应的app数据
+					if (appData) {
+						updatedResult[0] = { ...updatedResult[0], ...appData }
+					}
 				}
+
+				flushSync(() => {
+					setAppList(updatedResult)
+				})
 			},
 			onError: error => {
 				message.error(`获取应用列表失败: ${error}`)

@@ -23,7 +23,7 @@ export const API_PATHS = {
 	/**
 	 * Dify API v1 路径
 	 */
-	V1: '/special/ai/v1',
+	V1: '/special/ai/api',
 	/**
 	 * 官方 Dify API v1 路径
 	 */

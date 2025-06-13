@@ -689,8 +689,13 @@ export class DifyApi {
 		})
 	}
 
-	passportLogin = async () => {
-		return this.baseRequest.get('/passport',{"X-App-Code":"RdWflQIhxnOryI4J"})
+	passportCreate = async (appid: string) => {
+		return this.baseRequest.baseRequest('/passport', {
+			method: 'GET',
+			headers: {
+				'X-App-Code': appid,
+			},
+		}).then(res => res.json())
 	}
 }
 
