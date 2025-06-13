@@ -14,3 +14,5 @@ dist/
 
 # 子包 ts 构建的临时文件
 *.tsbuildinfo
+
+.cursorrules

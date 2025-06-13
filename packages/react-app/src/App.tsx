@@ -4,6 +4,7 @@ import { useThemeContext } from '@dify-chat/theme'
 import FingerPrintJS from '@fingerprintjs/fingerprintjs'
 import { useMount } from 'ahooks'
 import { theme as antdTheme, ConfigProvider } from 'antd'
+import zhCN from 'antd/locale/zh_CN'
 import { HashRouter } from 'react-router-dom'
 import { useState } from 'react'
 
@@ -34,6 +35,7 @@ export default function App() {
 
 	return (
 		<ConfigProvider
+			locale={zhCN}
 			theme={{
 				algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
 			}}

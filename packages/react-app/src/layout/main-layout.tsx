@@ -1,6 +1,7 @@
 import { XProvider } from '@ant-design/x'
 import { DifyApi } from '@dify-chat/api'
 import { AppModeEnums, IDifyAppItem, useAppContext } from '@dify-chat/core'
+import zhCN from 'antd/locale/zh_CN'
 import React from 'react'
 
 import { colors } from '@/theme/config'
@@ -44,7 +45,10 @@ const MainLayout = (props: IMainLayoutProps) => {
 	console.log('currentApp in mainn-layout', currentApp)
 
 	return (
-		<XProvider theme={{ token: { colorPrimary: colors.primary, colorText: colors['theme-text'] } }}>
+		<XProvider 
+			locale={zhCN}
+			theme={{ token: { colorPrimary: colors.primary, colorText: colors['theme-text'] } }}
+		>
 			{[AppModeEnums.CHATBOT, AppModeEnums.CHATFLOW, AppModeEnums.AGENT].includes(appMode) ? (
 				<ChatLayout {...props} />
 			) : (
