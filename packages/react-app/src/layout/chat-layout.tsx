@@ -264,33 +264,33 @@ export default function ChatLayout(props: IChatLayoutProps) {
 		]
 
 		const conversationListMenus: GetProp<typeof Dropdown, 'menu'>['items'] = [
-			{
-				key: 'view-mode',
-				type: 'group',
-				children: [
-					{
-						key: 'light',
-						label: (
-							<Radio.Group
-								key="view-mode"
-								optionType="button"
-								value={themeMode}
-								onChange={e => {
-									setThemeMode(e.target.value as ThemeModeEnum)
-								}}
-							>
-								<Radio value={ThemeModeEnum.SYSTEM}>{ThemeModeLabelEnum.SYSTEM}</Radio>
-								<Radio value={ThemeModeEnum.LIGHT}>{ThemeModeLabelEnum.LIGHT}</Radio>
-								<Radio value={ThemeModeEnum.DARK}>{ThemeModeLabelEnum.DARK}</Radio>
-							</Radio.Group>
-						),
-					},
-				],
-				label: '主题',
-			},
-			{
-				type: 'divider',
-			},
+			// {
+			// 	key: 'view-mode',
+			// 	type: 'group',
+			// 	children: [
+			// 		{
+			// 			key: 'light',
+			// 			label: (
+			// 				<Radio.Group
+			// 					key="view-mode"
+			// 					optionType="button"
+			// 					value={themeMode}
+			// 					onChange={e => {
+			// 						setThemeMode(e.target.value as ThemeModeEnum)
+			// 					}}
+			// 				>
+			// 					<Radio value={ThemeModeEnum.SYSTEM}>{ThemeModeLabelEnum.SYSTEM}</Radio>
+			// 					<Radio value={ThemeModeEnum.LIGHT}>{ThemeModeLabelEnum.LIGHT}</Radio>
+			// 					<Radio value={ThemeModeEnum.DARK}>{ThemeModeLabelEnum.DARK}</Radio>
+			// 				</Radio.Group>
+			// 			),
+			// 		},
+			// 	],
+			// 	label: '主题',
+			// },
+			// {
+			// 	type: 'divider',
+			// },
 			{
 				type: 'group',
 				label: '对话列表',
