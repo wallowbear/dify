@@ -15,7 +15,7 @@ export default defineConfig({
 	},
 	output: {
 		polyfill: 'entry',
-		assetPrefix: '/xin-chat/',
+		assetPrefix: './',
 	},
 	html: {
 		template: path.resolve(__dirname, './public/template.html'),
@@ -34,7 +34,7 @@ export default defineConfig({
 	],
 	server: {
 		compress: false, // 解决代理后流式输出失效的问题
-		base: '/xin-chat',
+		base: '/',
 		port: 5200,
 		proxy: [
 			{
