@@ -107,7 +107,7 @@ export const Chatbox = (props: ChatboxProps) => {
 		<AppIcon hasContainer />
 	) : (
 		// 使用一个svg url
-		<img src="/bot.svg" alt="bot" />
+		<img src="./bot.svg" alt="bot" />
 		// <LucideIcon
 		// 	name="bot"
 		// 	size={18}
