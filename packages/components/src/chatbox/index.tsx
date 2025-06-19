@@ -106,10 +106,12 @@ export const Chatbox = (props: ChatboxProps) => {
 	const aiIcon = currentApp?.site?.use_icon_as_answer_icon ? (
 		<AppIcon hasContainer />
 	) : (
-		<LucideIcon
-			name="bot"
-			size={18}
-		/>
+		// 使用一个svg url
+		<img src="/bot.svg" alt="bot" />
+		// <LucideIcon
+		// 	name="bot"
+		// 	size={18}
+		// />
 	)
 
 	const roles: GetProp<typeof Bubble.List, 'roles'> = {
@@ -118,7 +120,7 @@ export const Chatbox = (props: ChatboxProps) => {
 			avatar: {
 						icon: aiIcon,
 						style: {
-							background: isDark ? 'transparent' : '#fde3cf',
+							background: isDark ? 'transparent' : 'transparent',
 							// opacity: 0.9,
 							border: isDark ? '1px solid var(--theme-border-color)' : 'none',
 							color: isDark ? 'var(--theme-text-color)' : '#666',
