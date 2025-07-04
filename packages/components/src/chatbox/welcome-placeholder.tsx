@@ -1,9 +1,9 @@
-import { EllipsisOutlined, FireOutlined, ShareAltOutlined } from '@ant-design/icons'
+import { FireOutlined } from '@ant-design/icons'
 import { Prompts, Welcome } from '@ant-design/x'
 import { DifyApi } from '@dify-chat/api'
 import { useAppContext } from '@dify-chat/core'
 import { useIsMobile } from '@dify-chat/helpers'
-import { Button, FormInstance, GetProp, message, Space } from 'antd'
+import { FormInstance, GetProp, message, Space } from 'antd'
 import classNames from 'classnames'
 import { useMemo } from 'react'
 
@@ -96,7 +96,7 @@ export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
 							<div className="flex items-center justify-center rounded-[50%] w-14 h-14 border-theme-border border-solid border-[1px] bg-theme-bg">
 								<LucideIcon
 									name="bot"
-									size={30}
+									size={50}
 									className="text-3xl text-primary dark:text-theme-text"
 								/>
 							</div>

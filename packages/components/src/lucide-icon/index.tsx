@@ -5,7 +5,7 @@ interface ILucideIconProps {
 	/**
 	 * 图标名称（注意只支持 Lucide 主包自带图标）
 	 */
-	name: keyof typeof dynamicIconImports
+	name: keyof typeof dynamicIconImports | 'bot'
 	/**
 	 * 图标颜色 - 默认是 currentColor
 	 */
@@ -31,7 +31,7 @@ interface ILucideIconProps {
 	/**
 	 * 点击事件
 	 */
-	onClick?: React.MouseEventHandler<SVGElement>
+	onClick?: React.MouseEventHandler<SVGElement> | React.MouseEventHandler<HTMLImageElement>
 }
 
 /**
@@ -40,12 +40,27 @@ interface ILucideIconProps {
 export default function LucideIcon(props: ILucideIconProps) {
 	const { className, name, color, size, iconNode, strokeWidth, onClick } = props
 
+	// 特殊处理 bot 图标
+	if (name === 'bot') {
+		return (
+			<img
+				src="/bot.svg"
+				alt="bot"
+				width={size || 14}
+				height={size || 14}
+				className={className}
+				onClick={onClick as React.MouseEventHandler<HTMLImageElement>}
+				style={{ color }}
+			/>
+		)
+	}
+
 	const commonProps = {
 		color,
 		strokeWidth: strokeWidth || 2,
 		size: size || 14,
 		className,
-		onClick,
+		onClick: onClick as React.MouseEventHandler<SVGElement>,
 	}
 
 	if (iconNode) {
@@ -58,7 +73,7 @@ export default function LucideIcon(props: ILucideIconProps) {
 	}
 	return (
 		<DynamicIcon
-			name={name}
+			name={name as keyof typeof dynamicIconImports}
 			{...commonProps}
 		/>
 	)
