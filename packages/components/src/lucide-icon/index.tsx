@@ -44,7 +44,7 @@ export default function LucideIcon(props: ILucideIconProps) {
 	if (name === 'bot') {
 		return (
 			<img
-				src="/bot.svg"
+				src="./bot.svg"
 				alt="bot"
 				width={size || 14}
 				height={size || 14}
